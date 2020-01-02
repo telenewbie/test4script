@@ -9,6 +9,29 @@ content1 = u'你好，脚本之家 jb51.net'
 ffff = codecs.open(File,'w','utf-8')  #可以写入中文到文件中
 ffff.write(content1)
 ffff.close()
+print "采用codecs 的方式进行写中文",
+fileContent = open(File,"r")
+print fileContent.read()
+fileContent.close()
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+fileContent = open(File,"wt")
+fileContent.write(content1)
+fileContent.close()
+
+print "采用直接open 的方式进行写中文",
+fileContent = open(File,"r")
+print fileContent.read()
+fileContent.close()
+import io
+with io.open(File,'w',encoding='utf-8') as f:
+    f.write(unicode("\xEF\xBB\xBF", "utf-8"))#函数将\xEF\xBB\xBF写到文件开头，指示文件为UTF-8编码。
+    f.write(content1)
+print "采用io.open 的方式进行写中文",
+with open(File,"r") as f:
+    print f.read()
 
 f = open(File, "a+")
 f.write(content)
@@ -43,7 +66,7 @@ def testlie():
     print lis
     for i, t in enumerate(lis):
         print i, "==", t
-
+testlie()
 # 方法使用Map保存
 # choice={"V":testlie} #此处不加（）不会执行方法体
 # choice['V']() #此处会执行方法体

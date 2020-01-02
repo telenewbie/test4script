@@ -1,6 +1,6 @@
 # coding:utf-8
 
-# 创建元祖
+# 创建元祖 不可修改的数组  int const []
 yuan = (1, 2, 3, 4)
 # yuan[1]=0
 print (yuan)
@@ -13,7 +13,7 @@ xxx.insert(0,111)
 print xxx
 print xxx[::-1]
 print xxx[1:10:2]
-# 创建set
+# 创建set 对应 ArraySet 无序 add 的方式添加数据
 set_lie = {1, 31, 4, 3, 3, 30}
 # lie[1]=10
 print set_lie
@@ -24,7 +24,7 @@ print set_lie
 # print set_lie[::-1]
 # 创建MAP字典
 lie = {"V": test, "M": "nihao"}
-print lie.get("V");
+print lie.get("V")
 print len(lie)
 # 创建C语言的printf的形式
 print "%s is number %d" % ("python", 1)
@@ -57,6 +57,7 @@ for v in yuan:
 for yuanv in range(len(yuan)):
     print yuan[yuanv], "\t(%d)" % yuanv
 squared = [x * 2 for x in range(4) if not x % 2] #x%2返回值为0表示为false,not 0 表示为true
+print squared
 for i in squared:
     print i
 # 打开文件
@@ -109,6 +110,8 @@ x=y=z=1;
 print x,"-"*10,y,"-"*10,z,"-"*10
 x,y,z=1,2,3
 print x,"-"*10,y,"-"*10,z,"-"*10
+
+# set value是唯一的
 print set(map(lambda x: x if x % 2 else "", range(7)))
 
 # bev=eval("%s_version")

@@ -14,24 +14,34 @@ def test():
                 print eachline
         else:
             print 'this file is not exit'
-
-
 test = "13aB"
 test1 = "12"
+evalstr = "a" # 如果增加 字母则会被在执行eval(str[i]) 的时候会将这个视作变量
+print repr(evalstr[0])
+print str(evalstr[0])
+print eval(repr(evalstr[0]))
+# print eval(str(evalstr[0])) # 如果增加 字母则会被在执行eval(str[i]) 的时候会将这个视作变量
+print eval('['+','.join([repr(i) for i in evalstr])+']')
+# print eval('['+','.join([str(i) for i in evalstr])+']')
+
+
 print cmp(test1, test)
-repr(test)
-str(test)
+print repr(test)
+print str(test)
 print type(test)
 print type('test')
 print type("test")
+print type("""test""")
 print isinstance(test, str)  # 使用isInstance
 from types import StringType  # 类似java的import java.String 和import java.String.TAG
 
 if (type(test) == StringType):
     print "形同".decode(encoding='utf-8')
 print repr(list(test))
+print list(test)
 print str(tuple(test))
 print set(test)
+print repr(set(test))
 
 
 # print dict(test) #强转
