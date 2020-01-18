@@ -22,4 +22,4 @@ def readDeviceList():
     for dev in outstr.splitlines()[1:]:
         ret.append(dev.split("\t")[0])
     return ret
-print readDeviceList()
+# print readDeviceList()

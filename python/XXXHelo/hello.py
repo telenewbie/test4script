@@ -7,8 +7,11 @@ import  commands
 import sys
 def printStr(str):
     if not isinstance(str, unicode):
+        print 1
+        print str
         print str.decode("gbk").encode("utf8")
     else:
+        print 2
         print str.encode('utf8')
 
 url = "http://www.baidu.com/"
@@ -61,10 +64,13 @@ print webbrowser.get()
 
 # print(aaa);
 #os.system("ping www.baidu.com")
-(status, output) = commands.getstatusoutput('cat /proc/cpuinfo')
-printStr(output)
+(status, output) = commands.getstatusoutput('')
+print '-'*20
+# printStr(output)
+print output.decode("gbk").encode("utf8")
+print '-'*20
 print status
-re=os.popen("adb shell cat /proc/cpuinfo");
+re=os.popen("adb shell cat /proc/cpuinfo")
 # print test.encode("")
 print re.readlines()
 s = u'你好'

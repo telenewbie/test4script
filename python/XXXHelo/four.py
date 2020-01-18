@@ -23,7 +23,7 @@ def test():
         print "finally"
     import os
 
-    print  "11", os.linesep, "xxx"
+    print "11", os.altsep, "xxx"
     print os.getcwd()
     os.chdir("d:")
     print os.getcwd()
@@ -79,8 +79,8 @@ def testos():
     for filename in os.listdir(os.getcwd()):
         print filename.decode("gbk").encode("utf-8")
     print "读取文件目录完毕"
-    newf = os.rename(testfilename, "test.ttt")
-    allpath = os.path.join(os.getcwd(),"test.ttt")
+    # os.rename(testfilename, "test.ttt")
+    allpath = os.path.join(os.getcwd(), "test.ttt")
     print "完整的路径名称是：", allpath
     print "执行 splitext:", os.path.splitext(allpath)
     print "执行 basename:", os.path.basename(allpath)
@@ -88,9 +88,9 @@ def testos():
     print "执行 expandvars:", os.path.expandvars(allpath)
     print "执行 dirname:", os.path.dirname(allpath)
     # 生成一个目录下的所有文件（包括文件夹和文件）
-    for root, dirs, files in os.walk(os.getcwd(), topdown=False):
-        print "root",root.decode("gbk").encode("utf-8")
-        print "dir",dirs
+    for root, dirs, files in os.walk(os.getcwd(), topdown=True):
+        print "root", root.decode("gbk").encode("utf-8")
+        print "dir", dirs
         print "file",files
     print "开始删除文件和文件夹"
     # os.chdir(os.path.dirname(allpath))

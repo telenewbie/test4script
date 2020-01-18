@@ -4,7 +4,8 @@ import subprocess
 
 import os
 print "开始push文件"
-os.system(" adb push busybox /system/xbin/")
+ret = os.system(" adb push busybox /system/xbin/")
+print ret
 print "开始root"
 os.system("adb root")
 print "开始remote"

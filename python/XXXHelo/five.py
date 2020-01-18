@@ -13,7 +13,7 @@ print "当前所在的文件位置：%s" % os.getcwd()
 testfivefile="testfive.txt"
 fivefile=open(testfivefile,"w")
 fivefile.write("你好a\n")
-fivefile.tell()
+print fivefile.tell()
 fivefile.write("你好a")
 fivefile.tell()
 fivefile.close()

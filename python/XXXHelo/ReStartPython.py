@@ -100,7 +100,7 @@ def startThreadPool():
 
     pool.wait()
 
-
+startThreadPool()
 jsonStr = '{"state": "OK", "code": 0, "result": {"text": "小杜小杜", "code": 1}}'
 
 text = json.loads(jsonStr)

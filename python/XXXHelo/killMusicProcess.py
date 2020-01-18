@@ -10,9 +10,10 @@ def kill(result):
     code = os.system(" adb shell kill " + result.strip())
     print code
 
-
+print '-'*20
 processname = os.system('''adb shell ps|grep com.txznet.music|awk '{print$2","}''''')
-
+# 这里执行报错的原因是 grep不是连在 adb shell 的环境里面进行 的操作，还是再windows里面
+print '-'*20
 # print processname
 # result="["+str(processname)+"]"
 # print result
@@ -20,12 +21,13 @@ processname = os.system('''adb shell ps|grep com.txznet.music|awk '{print$2","}'
 #     print processID.strip()
 #     code=os.system(" adb shell kill "+processID.strip())
 #     print code
-
+print '-'*20
 result = subprocess.Popen("""adb shell ps|grep com.txznet.music|awk '{print $2}'""", stdin=subprocess.PIPE,
                           stdout=subprocess.PIPE)
-
+print '-'*20
 stdout, stderr = result.communicate()
-print stdout
+print '-'*20
+print stdout.decode("gbk").encode("utf-8")
 for processID in stdout.splitlines():
     print processID.strip()
     if len(processID.strip()) > 0:

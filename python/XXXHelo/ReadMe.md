@@ -123,7 +123,21 @@ def enqueue():
 choiceMap = {'e': enqueue} # 这里可以放入函数的指针
 choiceMap['e']() # 这里会调用方法
 ```
+## four.py
+明白python再文件的操作上面的编码问题
+## five.py
+明白python的压缩解压缩的方式
+## six.py
+明白python与子窗口的通讯【比方说Android的adb shell】
+## seven_high.py
+知道python正则表达式的用法
+## ReStartPython.py
+线程池
+
+
+
 # 需要解决的问题
 1. `''` `""` `""""""` 的区别？
 2. 字符串前缀 `r` `u` 等等代表什么意思，还有哪些前缀？
 [参考:字符串前缀u r b f](https://blog.csdn.net/tyttytzhz/article/details/85615648)
+
