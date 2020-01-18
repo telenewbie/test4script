@@ -13,6 +13,10 @@ def handler_version(url):
     hdlr.add_password('Archives', up(url)[1], LOGIN, PASSWORD)
     opener = urllib2.build_opener(hdlr)
     urllib2.install_opener(opener)
+    r = request_version(url)
+    print r.data
+    print r.headers
+    print r.host, ":", r.port
     return url
 
 
@@ -24,11 +28,11 @@ def request_version(url):
     return req
 
 
-for funcType in ('handler', 'request'):
-    print "*** Using %s:" % funcType.upper()
-    url = eval("%s_version")(URL_LOGIN)
-    f = urllib2.urlopen(url)
-    print f.readline()
-    f.close()
+# for funcType in ('handler', 'request'):
+#     print "*** Using %s:" % funcType.upper()
+#     url = eval("%s_version")(URL_LOGIN)
+#     f = urllib2.urlopen(url)
+#     print f.readline()
+#     f.close()
 
 print handler_version(URL_LOGIN)

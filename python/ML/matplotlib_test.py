@@ -33,12 +33,12 @@ ax.xaxis.set_ticks_position('bottom')
 ax.spines['bottom'].set_position(('data', 0))
 ax.yaxis.set_ticks_position('left')
 ax.spines['left'].set_position(('data', 0))
-
+#
 n = 1024
 X = np.random.normal(0,1,n)
 Y = np.random.normal(0,1,n)
 plt.scatter(X,Y)
-
+#
 #在屏幕上显示出来
 plt.show()
 
