@@ -4,6 +4,7 @@ from DrawUtils import *
 from TimeUtils import *
 from adbUtils import *
 from ObservedProcess import getObservedLists
+from ObservedProcess import getProcess
 from ObservedProcess import getProcessInfo
 from ObservedProcess import addProcessInfo
 from ObservedProcess import key_process_stopTime
@@ -151,6 +152,7 @@ musicmark = False
 launchermark = False
 
 
+# 将所有的数据都放置再各自的内存中 并分好类别
 def excuteMemdata(file):
     filename = os.path.basename(file)
     with open(file, 'a+') as datas:
@@ -186,14 +188,32 @@ def excuteMemdata(file):
 
 
 def memDraw(env, adress):
+    from ObservedProcess import getObservedTypeDict
+    from mergeData import merge_x
+    from mergeData import merge_y
     with open(os.path.join(env['result'], 'mem.txt'), 'w') as wdata:
-        for process in getObservedLists():
+        _dict = getObservedTypeDict()
+        for _process_list in _dict:
             core_dict = {}
-            core_dict[process] = getProcessInfo(process, key_process_mem, [])
+            _cpu_list_x = []
+            for process in _dict[_process_list]:
+                _process_dict = getProcess(process)
+                if _process_dict is not None:
+                    core_dict[process] = _process_dict
+                    _cpu_list_x.append(getProcessInfo(process, key_process_x_coordinate, []))
+
+            # 计算总和
+            if len(core_dict) <= 0:
+                continue
+            _all_x_list = list(merge_x(_cpu_list_x))
+            _all_y_list = merge_y(_all_x_list, key_process_x_coordinate, key_process_mem, core_dict)
+            core_dict["all"] = {}
+            core_dict["all"][key_process_x_coordinate] = _all_x_list
+            core_dict["all"][key_process_mem] = _all_y_list
+
             wdata.write('{0}:{1}\n'.format(process, core_dict))
-            # print "what:" + str(getProcessInfo(process, key_process_x_coordinate, []))
-            mem_draw(env, process, core_dict, adress,
-                     getProcessInfo(process, key_process_x_coordinate, []))
+            # 需要进行分类绘制
+            mem_draw_1(env, "mem_all", core_dict, key_process_x_coordinate, key_process_mem)
 
 
 def exc_memdata(env):
@@ -202,8 +222,9 @@ def exc_memdata(env):
     startMark = False
     startTime = 0
     adress = env['memlogpath']
+    from osUtils import listdir
     if adress:
-        for file in os.listdir(adress):
+        for file in listdir(adress):
             myfile = os.path.join(adress, file)
             if os.path.getsize(myfile) < 4 * 1024:
                 continue
@@ -248,6 +269,7 @@ HeapSize = 6
 
 # 统计com.txznet.txz 的 Dalvik Heap 这一项的占用
 def memoryAnalysis(env):
+    from osUtils import listdir
     for process in getObservedLists():
         DalvikHeapSizeList = []
         DalvikHeapAllocList = []
@@ -256,7 +278,10 @@ def memoryAnalysis(env):
         startMark = False
         firstTime = 0
         dir = os.path.join(env['memmoredata_core'], get_process(process))
-        for filename in os.listdir(dir):
+        for filename in listdir(dir):
+            if filename is None or filename == '':
+                print "helloxxxxxxxxxxxxxxx"
+                continue
             with open(os.path.join(dir, filename)) as memData:
                 for line in memData:
                     if line.find('Dalvik Heap') >= 0:

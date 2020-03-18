@@ -15,17 +15,6 @@ from logFile import *
 
 
 # 开启日志
-def openlog(env):
-    runAdbCommand(env, ['shell', 'mkdir', '-p', _TXZ_path])
-    runAdbCommand(env, ['shell', 'touch', _TXZ_path + 'log_enable_file'])
-    runAdbCommand(env, ['shell', 'touch', _TXZ_path + 'ENABLE_TRACE_GPS.debug'])
-    runAdbCommand(env, ['shell', 'touch', _TXZ_path + 'yzs_log.debug'])
-    runAdbCommand(env, ['shell', 'touch', _TXZ_path + 'txz_abc1234321.debug'])
-    runAdbCommand(env, ['shell', 'touch', _TXZ_path + 'disable_remote_tts_tool.debug'])
-    runAdbCommand(env, ['shell', 'touch', _TXZ_path + 'pcm_enable.debug'])
-    runAdbCommand(env, ['shell', 'touch', _TXZ_path + 'disable_remote_set_res.debug'])
-    runAdbCommand(env, ['shell', 'touch', _TXZ_path + 'ENABLE_TRACE_NAV_INFO.debug'])
-    runAdbCommand(env, ['shell', 'touch', _TXZ_path + 'call_stack_enable'])
 
 
 def obtaincontent(content):
@@ -524,7 +513,8 @@ def rebootDevice(env, connect=False, setPlan=False):
 
 # 推送文件到设备
 def pushfiletoandroid(env, orgpath, targpaht, suffix='.pcm'):
-    for mfile in os.listdir(orgpath):
+    from osUtils import listdir
+    for mfile in listdir(orgpath):
         if mfile.endswith(suffix) >= 0:
             runAdbCommand(env, ['push', os.path.join(orgpath, mfile),
                                 os.path.join(targpaht, mfile.decode('gbk').encode('utf-8'))])

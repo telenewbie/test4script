@@ -9,7 +9,8 @@ time_pattern = re.compile('\d+-\d+-\d+_\d+')
 
 
 def timeformat(adress):
-    list = os.listdir(adress)
+    from osUtils import listdir
+    list = listdir(adress)
     startTime = time_pattern.search(list[0]).group()
     stopTime = time_pattern.search(list[-1]).group()
     return datetime.datetime.strptime(stopTime, "%Y-%m-%d_%H%M%S") - datetime.datetime.strptime(startTime,

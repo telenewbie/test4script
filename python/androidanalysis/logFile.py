@@ -2,11 +2,24 @@
 
 import sys
 import time
-# from adbUtils import *
 from Constant import _TXZ_path
 from Constant import _RE_SYSLOGTIME
 import tkMessageBox
 import os
+
+
+def openlog(env):
+    from adbUtils import runAdbCommand
+    runAdbCommand(env, ['shell', 'mkdir', '-p', _TXZ_path])
+    runAdbCommand(env, ['shell', 'touch', _TXZ_path + 'log_enable_file'])
+    runAdbCommand(env, ['shell', 'touch', _TXZ_path + 'ENABLE_TRACE_GPS.debug'])
+    runAdbCommand(env, ['shell', 'touch', _TXZ_path + 'yzs_log.debug'])
+    runAdbCommand(env, ['shell', 'touch', _TXZ_path + 'txz_abc1234321.debug'])
+    runAdbCommand(env, ['shell', 'touch', _TXZ_path + 'disable_remote_tts_tool.debug'])
+    runAdbCommand(env, ['shell', 'touch', _TXZ_path + 'pcm_enable.debug'])
+    runAdbCommand(env, ['shell', 'touch', _TXZ_path + 'disable_remote_set_res.debug'])
+    runAdbCommand(env, ['shell', 'touch', _TXZ_path + 'ENABLE_TRACE_NAV_INFO.debug'])
+    runAdbCommand(env, ['shell', 'touch', _TXZ_path + 'call_stack_enable'])
 
 
 # 日志接口
@@ -25,7 +38,7 @@ def writeLog(env, msg):
         log.flush()  # 将缓存中所有内容清空写入文件
 
 
-# 日志接口
+# 日志接口 查找字符是否存在指定时间区间范围内的文件内，并返回该行
 def checklog(env, checkString):
     currentTime = time.time()
     print "checklog: ", env['syslogpath'], "<<>>", os.listdir(env['syslogpath'])

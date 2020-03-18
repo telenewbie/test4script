@@ -7,7 +7,8 @@ import threading
 from FileUtils import *
 from Constant import *
 from envUtils import *
-from logFile import *
+from logFile import writeLog
+from logFile import openlog
 from TimeUtils import *
 from PCMUtils import *
 from adbUtils import *
@@ -25,10 +26,8 @@ from burnningUtils import stopPreburn
 from ObservedProcess import setObservedLists
 
 
-
 # 开始测试
 def beginTest(_StopMark, processlist, _TimeValue, _switchMode, _intervalVar, testModel, dev=None):
-
     removeStateFile(stopApkMark)
     removeStateFile(successMark)
     setObservedLists(processlist)
@@ -93,7 +92,9 @@ def beginTest(_StopMark, processlist, _TimeValue, _switchMode, _intervalVar, tes
         pass
     writeLog(env, '--------------------内存数据-----------------------')
     memTrend(env)
+    # 通过dumpsys meminfo 的数据都画在一张图上
     exc_memdata(env)
+    # 分别绘制各自的内存数据 都 各自的图上
     memoryAnalysis(env)
     writeLog(env, '--------------------CPU数据-----------------------')
     commonanalysedata(env)

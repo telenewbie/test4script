@@ -8,6 +8,7 @@ from SoftwareUtils import *
 from ObservedProcess import getObservedLists
 from ObservedProcess import key_process_cpu
 from ObservedProcess import addProcessInfo
+from ObservedProcess import key_process_cpu_x
 from PreBurningUtils import *
 from burnningUtils import stopPreburn
 from hprofUtils import *
@@ -32,13 +33,13 @@ def excute(env, _StopMark, testModel):
     global sceneTimer
     writeLog(env, '>>>开始抓取TOP数据')
     # 定时启动项
-    mytimer(env,_StopMark) #FIXMe 暂时注释
+    mytimer(env, _StopMark)  # FIXMe 暂时注释
     timerMark = True
-    _top_thread_cmd = ['adb', '-s', env['dev'], 'shell', 'top', '-t', '-d', '1', '-m', '50']
+    _top_thread_cmd = ['adb', '-s', env['dev'], 'shell', 'top', '-t', '-d', '1', '-n', '1']
     _top_thread_p = subprocess.Popen(_top_thread_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     _syslog_cmd = ['adb', '-s', env['dev'], 'logcat', '-v', 'time']
     _syslog_p = subprocess.Popen(_syslog_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    _top_process_cmd = ['adb', '-s', env['dev'], 'shell', 'top', '-d', '1', '-m', '10']
+    _top_process_cmd = ['adb', '-s', env['dev'], 'shell', 'top', '-d', '1', '-n', '1']
     _top_process_p = subprocess.Popen(_top_process_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     count = 51200
     while not _StopMark.value:
@@ -140,36 +141,13 @@ def obtianCapabilityinfo(env, file):
     global memoryinfo_rss
     global nameinfo
     cpu_info, memoryinfo_rss, nameinfo = obtainindex(file)
-    # cpu_info =2
     print cpu_info
+    count = 0
     with open(file) as datas:
-        # 数据列表
-        # txzsvr1_cpu_list = []
-        # txzsvr2_cpu_list = []
-        # txzsvr3_cpu_list = []
-        # txzsvr0_cpu_list = []
-        # txz_cpu_list = []
-        # webchat_cpu_list = []
-        # music_cpu_list = []
-        # musicplayer_cpu_list = []
-        # musicsvr0_cpu_list = []
-        # total
         top5_list = []
         startremind = False
-        top5_count = 5
+        top5_count = 10
 
-        searchmark = False  # 每一次top 数据的开始
-        txzmark = True
-        svr0mark = True
-        svr1mark = True
-        svr2mark = True
-        svr3mark = True
-        webcahtmark = True
-        musicmark = True
-        playermark = True
-        musicsvr0 = True
-
-        xCount = 0
         space_line_count = 0  # 空行
         data_line = 0  # 数据行
         lines = (line.strip() for line in datas)
@@ -180,6 +158,7 @@ def obtianCapabilityinfo(env, file):
                 if data_line > 0:
                     space_line_count = 0
                     data_line = 0
+                    count += 1
                 space_line_count += 1
             else:
                 data_line = 1
@@ -191,197 +170,14 @@ def obtianCapabilityinfo(env, file):
                     # 去除 列名
                     continue
 
-                # 将cpu的信息存放到 dict中
-
-                # print data
-                # print cpu_info
-                # print "--" + data.split()[-1]
-                # print "--" + data.split()[cpu_info].strip('%')
-
                 addProcessInfo(data.split()[-1], key_process_cpu, float(data.split()[cpu_info].strip('%')))
-                #
-                # # 将每一次的结果数据都进行保存
-                # # 剔除掉 非有效数据的行
-                # # 如果是以 "User" 或者 包含 "CPU%"  则剔除 ，这种不可靠
-                # # 如果 空行 和 底下一行是包含 Name的那么就是做为开始
-                # if data.find("CPU%") > 0 or data.startswith("User"):
-                #     continue
-                # # 获取每个进程的名称
-                # lineProcessName = data.split()[-1]
-                # if lineProcessName in getObservedLists():
-                #     # 如果再被观测的队列中
-                #
-                #     pass
-                #
-                # if data.find('+ Idle') >= 0:
-                #     xCount += 1
-                #     if txzmark != svr0mark:
-                #         if not svr0mark:
-                #             if len(txz_cpu_list) > len(txzsvr0_cpu_list):
-                #                 txzsvr0_cpu_list.append(0.0)
-                #         if not txzmark:
-                #             if len(txz_cpu_list) < len(txzsvr0_cpu_list):
-                #                 txz_cpu_list.append(0.0)
-                #     if txzmark != svr1mark:
-                #         if not svr1mark:
-                #             if len(txz_cpu_list) > len(txzsvr1_cpu_list):
-                #                 txzsvr1_cpu_list.append(0.0)
-                #         if not txzmark:
-                #             if len(txz_cpu_list) < len(txzsvr1_cpu_list):
-                #                 txz_cpu_list.append(0.0)
-                #     if svr0mark != svr1mark:
-                #         if not svr1mark:
-                #             if len(txzsvr1_cpu_list) < len(txzsvr0_cpu_list):
-                #                 txzsvr1_cpu_list.append(0.0)
-                #         if not txzmark:
-                #             if len(txzsvr1_cpu_list) > len(txzsvr0_cpu_list):
-                #                 txzsvr0_cpu_list.append(0.0)
-                #     if not svr2mark:
-                #         if len(txz_cpu_list) > len(txzsvr2_cpu_list):
-                #             txzsvr2_cpu_list.append(0.0)
-                #     if not svr3mark:
-                #         if len(txz_cpu_list) > len(txzsvr3_cpu_list):
-                #             txzsvr3_cpu_list.append(0.0)
-                #     if txzmark == False and svr0mark == False and svr1mark == False and svr2mark == False and svr3mark == False:
-                #         txz_cpu_list.append(0.0)
-                #         txzsvr0_cpu_list.append(0.0)
-                #         txzsvr1_cpu_list.append(0.0)
-                #         txzsvr2_cpu_list.append(0.0)
-                #         txzsvr3_cpu_list.append(0.0)
-                #     if MusicWebchatSwitch:
-                #         if musicsvr0 != musicmark:
-                #             if not musicmark:
-                #                 if len(musicsvr0_cpu_list) > len(music_cpu_list):
-                #                     music_cpu_list.append(0.0)
-                #             if not musicsvr0:
-                #                 if len(musicsvr0_cpu_list) < len(music_cpu_list):
-                #                     musicsvr0_cpu_list.append(0.0)
-                #         if playermark != musicmark:
-                #             if not musicmark:
-                #                 if len(musicplayer_cpu_list) > len(music_cpu_list):
-                #                     music_cpu_list.append(0.0)
-                #             if not playermark:
-                #                 if len(musicplayer_cpu_list) < len(music_cpu_list):
-                #                     musicplayer_cpu_list.append(0.0)
-                #         if playermark != musicsvr0:
-                #             if not musicsvr0:
-                #                 if len(musicplayer_cpu_list) > len(musicsvr0_cpu_list):
-                #                     musicsvr0_cpu_list.append(0.0)
-                #             if not playermark:
-                #                 if len(musicplayer_cpu_list) < len(musicsvr0_cpu_list):
-                #                     musicplayer_cpu_list.append(0.0)
-                #         if musicmark == False and musicsvr0 == False and playermark == False:
-                #             music_cpu_list.append(0.0)
-                #             musicsvr0_cpu_list.append(0.0)
-                #             musicplayer_cpu_list.append(0.0)
-                #         if not webcahtmark:
-                #             webchat_cpu_list.append(0.0)
-                #     searchmark = True
-                #     txzmark = False
-                #     svr0mark = False
-                #     svr1mark = False
-                #     svr2mark = False
-                #     svr3mark = False
-                #     webcahtmark = False
-                #     musicmark = False
-                #     playermark = False
-                #     musicsvr0 = False
-                # elif (not MusicWebchatSwitch) and (txzmark and svr1mark):
-                #     continue
-                # elif (MusicWebchatSwitch and txzmark and svr1mark and webcahtmark and musicmark and musicsvr0):
-                #     continue
-                # if searchmark:
-                #     # core
-                #     if not txzmark:
-                #         txzmark = exc_search(data, '(.*)com.txznet.txz$', txz_cpu_list)
-                #     if not svr0mark:
-                #         svr0mark = exc_search(data, '(.*)com.txznet.txz:svr0$', txzsvr0_cpu_list)
-                #     if not svr1mark:
-                #         svr1mark = exc_search(data, '(.*)com.txznet.txz:svr1$', txzsvr1_cpu_list)
-                #     if not svr2mark:
-                #         svr2mark = exc_search(data, '(.*)com.txznet.txz:svr2$', txzsvr2_cpu_list)
-                #     if not svr3mark:
-                #         svr3mark = exc_search(data, '(.*)com.txznet.txz:svr3$', txzsvr3_cpu_list)
-                #     if MusicWebchatSwitch:
-                #         # webchat
-                #         if not webcahtmark:
-                #             webcahtmark = exc_search(data, '(.*)com.txznet.webchat$', webchat_cpu_list)
-                #         # txz——同听
-                #         if not musicmark:
-                #             musicmark = exc_search(data, '(.*)com.txznet.music$', music_cpu_list)
-                #         if not playermark:
-                #             playermark = exc_search(data, '(.*)com.txznet.music:player$', musicplayer_cpu_list)
-                #         if not musicsvr0:
-                #             musicsvr0 = exc_search(data, '(.*)com.txznet.music:svr0$', musicsvr0_cpu_list)
-        writeLog(env, 'CPU占用TOP5榜单:{0}'.format(
-            str(collections.Counter(top5_list)).replace('Counter({', '').replace('}', '').replace(': ', ':(').replace(
-                ',', '),')))
+                # 通过比较次数
 
-        # if txzmark != svr0mark:
-        #     if not svr0mark:
-        #         if len(txz_cpu_list) > len(txzsvr0_cpu_list):
-        #             txzsvr0_cpu_list.append(0.0)
-        #     if not txzmark:
-        #         if len(txz_cpu_list) < len(txzsvr0_cpu_list):
-        #             txz_cpu_list.append(0.0)
-        # if txzmark != svr1mark:
-        #     if not svr1mark:
-        #         if len(txz_cpu_list) > len(txzsvr1_cpu_list):
-        #             txzsvr1_cpu_list.append(0.0)
-        #     if not txzmark:
-        #         if len(txz_cpu_list) < len(txzsvr1_cpu_list):
-        #             txz_cpu_list.append(0.0)
-        # if svr0mark != svr1mark:
-        #     if not svr1mark:
-        #         if len(txzsvr1_cpu_list) < len(txzsvr0_cpu_list):
-        #             txzsvr1_cpu_list.append(0.0)
-        #     if not txzmark:
-        #         if len(txzsvr1_cpu_list) > len(txzsvr0_cpu_list):
-        #             txzsvr0_cpu_list.append(0.0)
-        # if not svr2mark:
-        #     if len(txz_cpu_list) > len(txzsvr2_cpu_list):
-        #         txzsvr2_cpu_list.append(0.0)
-        # if not svr3mark:
-        #     if len(txz_cpu_list) > len(txzsvr3_cpu_list):
-        #         txzsvr3_cpu_list.append(0.0)
-        # if txzmark == False and svr0mark == False and svr1mark == False and svr2mark == False and svr3mark == False:
-        #     txz_cpu_list.append(0.0)
-        #     txzsvr0_cpu_list.append(0.0)
-        #     txzsvr1_cpu_list.append(0.0)
-        #     txzsvr2_cpu_list.append(0.0)
-        #     txzsvr3_cpu_list.append(0.0)
-        # if MusicWebchatSwitch:
-        #     if musicsvr0 != musicmark:
-        #         if not musicmark:
-        #             if len(musicsvr0_cpu_list) > len(music_cpu_list):
-        #                 music_cpu_list.append(0.0)
-        #         if not musicsvr0:
-        #             if len(musicsvr0_cpu_list) < len(music_cpu_list):
-        #                 musicsvr0_cpu_list.append(0.0)
-        #     if playermark != musicmark:
-        #         if not musicmark:
-        #             if len(musicplayer_cpu_list) > len(music_cpu_list):
-        #                 music_cpu_list.append(0.0)
-        #         if not playermark:
-        #             if len(musicplayer_cpu_list) < len(music_cpu_list):
-        #                 musicplayer_cpu_list.append(0.0)
-        #     if playermark != musicsvr0:
-        #         if not musicsvr0:
-        #             if len(musicplayer_cpu_list) > len(musicsvr0_cpu_list):
-        #                 musicsvr0_cpu_list.append(0.0)
-        #         if not playermark:
-        #             if len(musicplayer_cpu_list) < len(musicsvr0_cpu_list):
-        #                 musicplayer_cpu_list.append(0.0)
-        #     if musicmark == False and musicsvr0 == False and playermark == False:
-        #         music_cpu_list.append(0.0)
-        #         musicsvr0_cpu_list.append(0.0)
-        #         musicplayer_cpu_list.append(0.0)
-        #     if not webcahtmark:
-        #         webchat_cpu_list.append(0.0)
-        # --
-        datas.close()
-        # return [txzsvr1_cpu_list, txzsvr0_cpu_list, txz_cpu_list, webchat_cpu_list, music_cpu_list,
-        #         musicplayer_cpu_list, musicsvr0_cpu_list, txzsvr2_cpu_list, txzsvr3_cpu_list]
+                addProcessInfo(data.split()[-1], key_process_cpu_x, count)
+        writeLog(env, 'CPU占用TOP{0}榜单:{1}'.format(top5_count,
+                                                 str(collections.Counter(top5_list)).replace('Counter({', '').replace(
+                                                     '}', '').replace(': ', ':(').replace(
+                                                     ',', '),')))
 
 
 # 统计系统总CPU消耗
@@ -448,17 +244,34 @@ def processall(list1, list2, list3=None, list4=None, list5=None):
 
 # 普通画图---cpu采取补零，导致通过list空的判断失效
 def commonanalysedata(env):
+    from ObservedProcess import getObservedTypeDict
+    from ObservedProcess import getProcess
+    from mergeData import merge_x
+    from mergeData import merge_y
     obtianCapabilityinfo(env, amalgamateFile(env, env['top_process_logpath']))
     # if data:
     with open(os.path.join(env['result'], 'cpu.txt'), 'w') as wdata:
-        core_cpu_dict = {}
-        for process in getObservedLists():
-            core_cpu_dict[process] = getProcessInfo(process, key_process_cpu, [])
-            pass
-        # printInfos()
+        _dict = getObservedTypeDict()
+        for _process_list in _dict:
+            core_cpu_dict = {}
+            _cpu_list_x = []
+            for process in _dict[_process_list]:
+                _process_dict = getProcess(process)
+                if _process_dict is not None:
+                    core_cpu_dict[process] = _process_dict
+                    _cpu_list_x.append(getProcessInfo(process, key_process_cpu_x, []))
 
-        wdata.write('core:{0}\n'.format(core_cpu_dict))
-        cpu_draw(env, 'txzcore', core_cpu_dict)
+            # 计算总和
+            if len(core_cpu_dict) <= 0:
+                continue
+            _all_x_list = list(merge_x(_cpu_list_x))
+            _all_y_list = merge_y(_all_x_list, key_process_cpu_x, key_process_cpu, core_cpu_dict)
+            core_cpu_dict["all"] = {}
+            core_cpu_dict["all"][key_process_cpu_x] = _all_x_list
+            core_cpu_dict["all"][key_process_cpu] = _all_y_list
+
+            wdata.write('core:{0}\n'.format(core_cpu_dict))
+            cpu_draw_1(env, "cpu_all", core_cpu_dict, key_process_cpu_x, key_process_cpu)
 
 
 # ----------------------------------top_process合成----------------------------------------------------
@@ -466,7 +279,8 @@ def commonanalysedata(env):
 def amalgamateFile(env, dir):
     filename = os.path.join(env['result'], 'amalgamatefile.txt')
     result = open(filename, 'w')
-    for file in os.listdir(dir):
+    from osUtils import listdir
+    for file in listdir(dir):
         with open(os.path.join(dir, file)) as datas:
             result.writelines(datas)
         datas.close()

@@ -1,10 +1,12 @@
 # -*- coding:utf-8 -*-
 import os
 import subprocess
+from osUtils import listdir
+
 
 def obtainPcmList():
     pcmlist = []
-    for mFile in os.listdir('.'):
+    for mFile in listdir("."):
         if os.path.isdir(mFile):
             if mFile.lower().find('pcm') >= 0:
                 pcmlist.append(mFile)

@@ -53,8 +53,8 @@ nameinfo = -1
 
 # -----------------------------------------------------------------------------
 # 正则规则
-__RE_REMOTE_DEV = re.compile(r'^\d+\.\d+\.\d+\.\d+(\:\d+)?$')  # 匹配IP地址的设备
-__RE_IP_ADRESS = re.compile(r'^\d+\.\d+\.\d+\.\d+(\:\d+)?')
+__RE_REMOTE_DEV = re.compile(r'^\d+\.\d+\.\d+\.\d+(:\d+)?$')  # 匹配IP地址的设备
+__RE_IP_ADRESS = re.compile(r'^\d+\.\d+\.\d+\.\d+(:\d+)?')
 __RE_APK_PATH = re.compile('(?::).+')
-_RE_SYSLOGTIME = re.compile('\d+_\d+')
+_RE_SYSLOGTIME = re.compile(r'\d+_\d+')
 _RE_TTSAPK = re.compile('start loadRes path:(.+?.apk)')

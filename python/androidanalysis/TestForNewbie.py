@@ -5,6 +5,9 @@ from ObservedProcess import getProcessInfo
 from ObservedProcess import setObservedLists
 from ObservedProcess import key_process_dir
 from FileUtils import mkdirs
+import multiprocessing
+import ctypes
+from envUtils import genEnv
 
 from Constant import setOver
 
@@ -30,28 +33,6 @@ def hello():
                 print data
                 # print space_line_count
                 # print data.split()[-1]
-
-
-def testMem():
-    # 172280 kB: com.txznet.txz (pid 18691)
-    # (\d+?) kB: (\S+?) \((.+?)\)
-    # (\d+?) kB: (\S+?) \(pid (\d+?)( / \S+?)?\)
-    txz_meminfo = re.compile("(\\d+?) kB: (\\S+?) \(pid (\\d+?)( / \\S+?)?\)")
-    with open("mem.txt") as datas:
-        lines = (line.strip() for line in datas)
-        for dumpsysinfo in lines:
-            if dumpsysinfo:
-                print dumpsysinfo
-                print len(dumpsysinfo)
-            # txzmem = txz_meminfo.search(data)
-            # if txzmem:
-            #     print "0:"+txzmem.group(0)
-            #     print "1:"+txzmem.group(1)
-            #     print "2:"+txzmem.group(2)
-            #     print "3:"+txzmem.group(3)
-            #     # print "4:"+txzmem.group(4)
-            # print dumpsysinfo
-            # print "-----------"
 
 
 def over1():
@@ -102,44 +83,70 @@ def globalsettingvar():
     pass
 
 
-def testprintmem():
+def testprintmem(env):
     # 设置10s后自动关闭
     # threading.Thread(target=over5).start()
     # 开始获取pid 供mem 使用
     # obtainpid(env, 1)
     # 开始打印mem
     memTrend(env)  # 测试通过
+    # 通过dumpsys meminfo 的数据都画在一张图上
+    exc_memdata(env)
+    # 分别绘制各自的内存数据 都 各自的图上
+    memoryAnalysis(env)
+
+
+def testCPU(env):
+    commonanalysedata(env)
+    obtianCrashCount(env)
+    pass
 
 
 if __name__ == "__main__":
     # obtainindex("Top.log")
-    setObservedLists("com.txznet.txz;com.txznet.txz:svr1")
+    setObservedLists("com.txznet.music")
+    # setObservedLists("com.txznet.txz;com.txznet.txz:svr1;com.txznet.music")
     # hello()
     # testMem()
     env = {}
     # 这里的路径需要修改
-    env['dir'] = "MTI3LjAuMC4xOjYyMDAx_20200313_103920"
-    # env['dir'] = "MTI3LjAuM_151447"
-
-    # 测试cpu 测试通过
-    env['top_process_logpath'] = os.path.join(env['dir'], 'top_process_data')
-    env['result'] = os.path.join(env['dir'], 'Result')
-    # commonanalysedata(env) # 通过
-
-    # 测试内存
-    env['memlogpath'] = os.path.join(env['dir'], 'memdata')
-    env['memmoredata_core'] = os.path.join(env['dir'], 'memmoredata_core')
-    # os.mkdir(r"""hello:a""")  # 冒号是盘符
-    for process in getObservedLists():
-        initProcess(env, process)
-
+    env['dir'] = "MDEyMzQ1Njc4OUFCQ0RFRg==_20200316_185041"
     env['dev'] = "127.0.0.1:62001"
-    # setOver(True)
-    # 初步结论，不同的文件对于同一个变量 即使是global的形态也不会改变另一个文件的值
+    env = genEnv(test=True, myenv=env)
+
+    from ObservedProcess import getObservedTypeDict
+
+    _dict = getObservedTypeDict()
+    for process in _dict:
+        print _dict[process]
+
+    # testCPU()
+    testCPU(env)
+    testprintmem(env)
+    # # env['dir'] = "MTI3LjAuM_151447"
+    #
+    # # 测试cpu 测试通过
+    # env['top_process_logpath'] = os.path.join(env['dir'], 'top_process_data')
+    # env['result'] = os.path.join(env['dir'], 'Result')
+    # commonanalysedata(env) # 通过
+    #
+    # # 测试内存
+    # env['memlogpath'] = os.path.join(env['dir'], 'memdata')
+    # env['memmoredata_core'] = os.path.join(env['dir'], 'memmoredata_core')
+    # # os.mkdir(r"""hello:a""")  # 冒号是盘符
+    # for process in getObservedLists():
+    #     initProcess(env, process)
+    #
+    # env['dev'] = "127.0.0.1:62001"
+    # # setOver(True)
+    # # 初步结论，不同的文件对于同一个变量 即使是global的形态也不会改变另一个文件的值
     # exc_memdata(env)  # 通过
     # testprintmem()
-    # obtainHprof(env,"end")
-    # mytimer(env)
-    #androidanalysis/MTI3LjAuMC4xOjYyMDAx_20200312_181249
+    # # obtainHprof(env,"end")
+    # # mytimer(env)
+    # # androidanalysis/MTI3LjAuMC4xOjYyMDAx_20200312_181249
     # memTrend(env)
-    memoryAnalysis(env)
+    # memoryAnalysis(env)
+    # _StopMark = multiprocessing.Value(ctypes.c_bool, False)
+    #
+    # excute(env, _StopMark, 1)

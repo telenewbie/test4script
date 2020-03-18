@@ -13,7 +13,8 @@ def flowCounter(env, userid, hour):
     if userid < 0:
         return False
     result = []
-    filelist = os.listdir(env['flow'])
+    from osUtils import listdir
+    filelist = listdir(env['flow'])
     if len(filelist) > 1:
         for filename in filelist:
             with open(os.path.join(env['flow'], filename)) as mData:

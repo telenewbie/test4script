@@ -32,18 +32,41 @@ def getObservedLists():
     return observerProcessLists
 
 
+def getObservedTypeDict():
+    """
+    返回分类后的结果
+    :return:
+    """
+    global observerProcessLists
+    # 原则 ： 将 以： 进行分割，并取 ： 前面的字符串 相同的为一类
+    _dict = {}
+    for process in observerProcessLists:
+        if process.find(":") != -1:
+            _dict[process[0:process.index(":")]].append(process)
+        else:
+            _dict[process] = [process]
+    return _dict
+
+
 # 设置一个 dict 列表里面包含 dict dict{processName,dict{${key},[]}} ,key 为 pid kill_time launch
 process_dict = {}  # 字典
 key_process_pid = "pid"
 # key_process_startTime = "start_time"
 key_process_stopTime = "stop_time"
 key_process_cpu = "cpu"
+key_process_cpu_x = "cpu_x"
 key_process_mem = "mem"
 key_process_begin_mem = "begin_mem"
 key_process_end_mem = "end_mem"
 key_process_x_coordinate = "x_coordinate"  # x 坐标 在 内存画图中使用
 key_process_x_coordinate_base = "x_coordinate_base"  # x 坐标 在 内存画图中使用
 key_process_dir = "dir"  # 进程相关的文件夹
+
+
+def getProcess(processName):
+    if (processName not in process_dict):
+        return None
+    return process_dict[processName]
 
 
 def addProcessInfo(processName, key, value):
@@ -77,10 +100,8 @@ def haveProcessInfo(processName, key, need):
 # 这个key 是否 有值
 def isNullprocessInfo(processName, key):
     if (processName not in process_dict):
-        print("xxxxxx")
         return True
     if (key not in process_dict[processName]):
-        print("yyyyyy")
         return True
     return len(process_dict[processName]) == 0
 
