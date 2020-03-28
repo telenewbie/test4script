@@ -87,8 +87,14 @@ def beginTest(_StopMark, processlist, _TimeValue, _switchMode, _intervalVar, tes
     mHouer = consumeHour(consumeTime(startTime, endTime))
     writeLog(env, '始于：{0}，终于：{1}，总试耗时：{2:.2f}H'.format(str(startTime), str(endTime), mHouer))
     flowCounter(env, obtainuserid(env), mHouer)
+
     for process in getObservedLists():
-        writeLog(env, '进程：{0}，被杀{1}次;'.format(process, getprocessInfoKeyLen(process, key_process_pid)))
+        killed_count = getprocessInfoKeyLen(process, key_process_pid)
+        if killed_count == 0:
+            writeLog(env, '进程：{0}，未启动过;'.format(process))
+        else:
+            writeLog(env, '进程：{0}，被杀{1}次;'.format(process, killed_count - 1))
+
         pass
     writeLog(env, '--------------------内存数据-----------------------')
     memTrend(env)

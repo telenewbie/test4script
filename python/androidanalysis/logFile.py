@@ -31,6 +31,7 @@ def writeLog(env, msg):
     msg = '[%s][%s]%s\n' % (tm, dev, msg)
     try:
         sys.stdout.write(msg.decode('utf-8').encode('gbk'))
+        # sys.stdout.write(msg)
     except:
         sys.stdout.write(msg)
     if log is not None:

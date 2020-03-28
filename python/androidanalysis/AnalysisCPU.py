@@ -23,24 +23,30 @@ from ObservedProcess import printInfos
 
 # 分析 CPU
 
+def write2File(process, pid, cpu_usage):
+    pass
+
 
 # 抓取数据
 # top 线程 前 50的数据
 # top 进程 前 10的数据
 # logcat -v time 的数据
 def excute(env, _StopMark, testModel):
+    from Proc4CPU import start_monitor_pid_cpu_usage, start_monitor_thread_cpu_usage
+    from ObservedProcess import getObservedLists
+    from AnalysisPid import getPidFromPackage
     global errorstauts
     global sceneTimer
     writeLog(env, '>>>开始抓取TOP数据')
     # 定时启动项
     mytimer(env, _StopMark)  # FIXMe 暂时注释
     timerMark = True
-    _top_thread_cmd = ['adb', '-s', env['dev'], 'shell', 'top', '-t', '-d', '1', '-n', '1']
-    _top_thread_p = subprocess.Popen(_top_thread_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # _top_thread_cmd = ['adb', '-s', env['dev'], 'shell', 'top', '-t', '-d', '1', '-n', '1']
+    # _top_thread_p = subprocess.Popen(_top_thread_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     _syslog_cmd = ['adb', '-s', env['dev'], 'logcat', '-v', 'time']
     _syslog_p = subprocess.Popen(_syslog_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    _top_process_cmd = ['adb', '-s', env['dev'], 'shell', 'top', '-d', '1', '-n', '1']
-    _top_process_p = subprocess.Popen(_top_process_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # _top_process_cmd = ['adb', '-s', env['dev'], 'shell', 'top', '-d', '1', '-n', '1']
+    # _top_process_p = subprocess.Popen(_top_process_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     count = 51200
     while not _StopMark.value:
         if os.path.exists(stopApkMark):
@@ -71,17 +77,32 @@ def excute(env, _StopMark, testModel):
                 if _StopMark.value:
                     break
                 else:
-                    _top_thread_p, top_thread_file = writeWithPOpen(env, _top_thread_p, top_thread_file,
-                                                                    env['top_thread_logpath'], Top_thread_file_name,
-                                                                    _top_thread_cmd)
+                    def write2File(log_file, content):
+                        log_file.writelines(content)
+                        log_file.flush()
+
+                    def writeCpuThreadCallback(process, parent_pid, pid, usage):
+                        recordtime = time.strftime('%Y%m%d_%H%M%S', time.localtime())
+                        write2File(top_thread_file,
+                                   "{0},{1},{2},{3},{4}\n".format(recordtime, process, parent_pid, pid, usage))
+
+                    def writeCpuPidCallback(process, parent_pid, pid, usage):
+                        recordtime = time.strftime('%Y%m%d_%H%M%S', time.localtime())
+                        write2File(top_process_file,
+                                   "{0},{1},{2},{3},{4}\n".format(recordtime, process, parent_pid, pid, usage))
+
+                    for process in getObservedLists():
+                        pid = getPidFromPackage(env, process)
+                        if pid == -1:
+                            # writeLog(env, "can't find process:" + process)
+                            continue
+                        start_monitor_pid_cpu_usage("", 1, pid, writeCpuPidCallback)
+                        start_monitor_thread_cpu_usage("", 1, pid, writeCpuThreadCallback)
                     _syslog_p, syslog_file = writeWithPOpen(env, _syslog_p, syslog_file, env['syslogpath'],
                                                             syslog_file_name, _syslog_cmd)
-                    _top_process_p, top_process_file = writeWithPOpen(env, _top_process_p, top_process_file,
-                                                                      env['top_process_logpath'], Top_process_file_name,
-                                                                      _top_process_cmd)
                 syslog_file.write(_syslog_p.stdout.readline().strip() + '\n')
-                top_thread_file.write(_top_thread_p.stdout.readline().strip() + '\n')
-                top_process_file.write(_top_process_p.stdout.readline().strip() + '\n')
+                top_process_file.write("\n")
+                top_thread_file.write("\n")
                 if errorstauts:
                     _StopMark.value = True
             if _StopMark.value:
@@ -89,11 +110,7 @@ def excute(env, _StopMark, testModel):
                     sceneTimer.cancel()
                 except:
                     pass
-                writeWithPOpen(env, _top_thread_p, top_thread_file, env['top_thread_logpath'], Top_thread_file_name,
-                               _top_thread_cmd, True)
                 writeWithPOpen(env, _syslog_p, syslog_file, env['syslogpath'], syslog_file_name, _syslog_cmd, True)
-                writeWithPOpen(env, _top_process_p, top_process_file, env['top_process_logpath'], Top_process_file_name,
-                               _top_process_cmd, True)
                 timerMark = mytimercancel(env, timerMark)
                 break
             syslog_file.close()
@@ -135,13 +152,38 @@ def exc_search(data, regular, cpu_list):
         return False
 
 
+def obtianProcPidStatinfo(env, file):
+    '''
+    通过 /proc/pid/stat 的方式获取cpu使用率
+    :param env:
+    :param file: 情况
+    :return:
+    '''
+    with open(file) as datas:
+        lines = (line.strip() for line in datas)
+        count = 0
+        for data in lines:
+            if not data:  # 空行
+                count += 1
+                # print "遇到空行 empty line"
+                continue
+
+            #  时间 进程名称 父进程pid,进程号 cpu使用率
+            data = data.split(",")
+            addProcessInfo(data[1], key_process_cpu, float(data[-1]))
+            # 通过比较次数
+
+            addProcessInfo(data[1], key_process_cpu_x, count)
+    pass
+
+
 # 处理日志数据
 def obtianCapabilityinfo(env, file):
     global cpu_info
     global memoryinfo_rss
     global nameinfo
     cpu_info, memoryinfo_rss, nameinfo = obtainindex(file)
-    print cpu_info
+    # print cpu_info
     count = 0
     with open(file) as datas:
         top5_list = []
@@ -248,7 +290,9 @@ def commonanalysedata(env):
     from ObservedProcess import getProcess
     from mergeData import merge_x
     from mergeData import merge_y
-    obtianCapabilityinfo(env, amalgamateFile(env, env['top_process_logpath']))
+    from mergeData import merge_y_1
+    obtianProcPidStatinfo(env, amalgamateFile(env, env['top_process_logpath']))
+    # obtianCapabilityinfo(env, amalgamateFile(env, env['top_process_logpath']))
     # if data:
     with open(os.path.join(env['result'], 'cpu.txt'), 'w') as wdata:
         _dict = getObservedTypeDict()
@@ -265,7 +309,8 @@ def commonanalysedata(env):
             if len(core_cpu_dict) <= 0:
                 continue
             _all_x_list = list(merge_x(_cpu_list_x))
-            _all_y_list = merge_y(_all_x_list, key_process_cpu_x, key_process_cpu, core_cpu_dict)
+            # _all_y_list = merge_y(_all_x_list, key_process_cpu_x, key_process_cpu, core_cpu_dict)
+            _all_y_list = merge_y_1(_all_x_list, key_process_cpu_x, key_process_cpu, core_cpu_dict)
             core_cpu_dict["all"] = {}
             core_cpu_dict["all"][key_process_cpu_x] = _all_x_list
             core_cpu_dict["all"][key_process_cpu] = _all_y_list

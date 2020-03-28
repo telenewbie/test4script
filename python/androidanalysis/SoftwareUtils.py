@@ -7,7 +7,7 @@ import re
 
 from adbUtils import *
 from Constant import nameinfo
-# from Constant import cpu_info
+from Constant import cpu_info
 from Constant import memoryinfo_rss
 from ProcessUtils import get_process_task
 from ProcessUtils import get_process_fd
@@ -17,7 +17,7 @@ from ProcessUtils import get_process_task_path
 
 # 获取索引
 def obtainindex(file):
-    # global cpu_info
+    global cpu_info
     # global memoryinfo_rss
     # global nameinfo
     with open(file) as datas:

@@ -44,7 +44,7 @@ def writeProcessMem(env, process=''):
     mkdirs(process_mem_dir)
 
     with open(os.path.join(process_mem_dir, r'mem_' + t + r'.txt'), 'w') as file1:
-        writeLog(env, "正在写入 {0} 进程的内存 到文件{1}/mem_{2}...".format(process, process_mem_dir, t))
+        # writeLog(env, "正在写入 {0} 进程的内存 到文件{1}/mem_{2}...".format(process, process_mem_dir, t))
         file1.write(stdoutdata1)
         file1.close()
         del file1
@@ -152,6 +152,23 @@ musicmark = False
 launchermark = False
 
 
+def excuteMemData(process_name, filename, mem_size):
+    addProcessInfo(process_name, key_process_mem, float(mem_size) / 1024)
+    if getProcessInfo(process_name, key_process_x_coordinate_base) is None:  # 差值
+        addProcessInfo(process_name, key_process_x_coordinate_base, filenametime(filename))
+        addProcessInfo(process_name, key_process_x_coordinate, 0)
+    else:
+        # 取出值进行加减 然后在保存
+        mylist = getProcessInfo(process_name, key_process_x_coordinate_base)  # 这里只会用到最后一个没有必要存放这么多
+
+        endtime = filenametime(filename)
+        starttime = mylist[0]
+        deltime = endtime - starttime
+        # addProcessInfo(process_name, key_process_x_coordinate_base, filenametime(filename))
+        addProcessInfo(process_name, key_process_x_coordinate, deltime)
+        pass
+
+
 # 将所有的数据都放置再各自的内存中 并分好类别
 def excuteMemdata(file):
     filename = os.path.basename(file)
@@ -190,7 +207,7 @@ def excuteMemdata(file):
 def memDraw(env, adress):
     from ObservedProcess import getObservedTypeDict
     from mergeData import merge_x
-    from mergeData import merge_y
+    from mergeData import merge_y_1
     with open(os.path.join(env['result'], 'mem.txt'), 'w') as wdata:
         _dict = getObservedTypeDict()
         for _process_list in _dict:
@@ -206,12 +223,17 @@ def memDraw(env, adress):
             if len(core_dict) <= 0:
                 continue
             _all_x_list = list(merge_x(_cpu_list_x))
-            _all_y_list = merge_y(_all_x_list, key_process_x_coordinate, key_process_mem, core_dict)
+            # _all_y_list = merge_y(_all_x_list, key_process_x_coordinate, key_process_mem, core_dict)
+            _all_y_list = merge_y_1(_all_x_list, key_process_x_coordinate, key_process_mem, core_dict)
             core_dict["all"] = {}
             core_dict["all"][key_process_x_coordinate] = _all_x_list
             core_dict["all"][key_process_mem] = _all_y_list
 
             wdata.write('{0}:{1}\n'.format(process, core_dict))
+            # from ObservedProcess import printInfos
+            # print("----------------------")
+            # printInfos()
+            # print("----------------------")
             # 需要进行分类绘制
             mem_draw_1(env, "mem_all", core_dict, key_process_x_coordinate, key_process_mem)
 
@@ -224,15 +246,51 @@ def exc_memdata(env):
     adress = env['memlogpath']
     from osUtils import listdir
     if adress:
+        success_get_all_mem = True
         for file in listdir(adress):
             myfile = os.path.join(adress, file)
             if os.path.getsize(myfile) < 4 * 1024:
-                continue
+                # 表明没有获取到数据，要么能获取到，要么获取不到
+                # 如果 小于 4k 表明获取不到，采用单独进程 adb shell dumpsys meminfo processName的方式进行
+                success_get_all_mem = False
+                break
             excuteMemdata(myfile)
+        if not success_get_all_mem:
+            # 从各自的进程里面取获取内存数据
+            doMemAnalysis(env)
+            pass
 
         memDraw(env, adress)
     else:
         writeLog(env, "路径为空，请检查!")
+
+
+def doMemAnalysis(env):
+    # 根据 进程名称进入 相应的进程目录下面
+    from osUtils import listdir
+    for process in getObservedLists():
+        dir = os.path.join(env['memmoredata_core'], get_process(process))
+        for filename in listdir(dir):
+            if filename is None or filename == '':
+                print "helloxxxxxxxxxxxxxxx"
+                continue
+            with open(os.path.join(dir, filename)) as memData:
+                for line in memData:
+                    # 如果包含  "TOTAL:" 则 提取出后面的关键字
+                    if "TOTAL:" in line:
+                        values = line.split(" ")
+                        i = 0
+                        for value in values:
+                            if value.strip() == "":
+                                continue
+                            i += 1
+                            if i == 2:
+                                excuteMemData(process,filename,value)
+                                # print ",value:" + value
+                        pass
+                    pass
+        pass
+    pass
 
 
 logtime_pattern = re.compile('\d+-\d+-\d+_\d+')

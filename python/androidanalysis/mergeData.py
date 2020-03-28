@@ -43,3 +43,42 @@ def merge_y(x_list, x_name, y_name, iterables):
     for y in sorted(_y):
         _list.append(_y[y])
     return _list
+
+
+def merge_y_1(x_list, x_name, y_name, iterables):
+    print ("start --------------merge yyy")
+    '''
+    如果不存在相应的 x坐标 则需要将 之前的值 进行累加
+
+    :param x_list:
+    :param x_name:
+    :param y_name:
+    :param iterables:
+    :return:
+    '''
+    _y = {}
+    for i in x_list:
+        _y[i] = 0
+        pass
+    # 进行合并
+    for it in iterables:
+        if iterables[it] is None:
+            continue
+        has_key_x = x_name in iterables[it]
+        has_key_y = y_name in iterables[it]
+        if has_key_x and has_key_y:
+            same_key_len = len(iterables[it][x_name]) == len(iterables[it][y_name])
+            if same_key_len:  # 长度相等才可以
+                success_find_index = 0
+                for i in x_list:
+                    if i in iterables[it][x_name]:
+                        success_find_index = iterables[it][x_name].index(i)
+                    # 取前一个值进行累加，如果没有前一个值则默认为0
+                    _y[i] += iterables[it][y_name][success_find_index]
+                    # print "第 %s 个值:%s,加入进来的值：%s" % (i, _y[i], iterables[it][y_name][success_find_index])
+                    pass
+
+    _list = []
+    for y in sorted(_y):
+        _list.append(_y[y])
+    return _list

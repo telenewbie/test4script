@@ -41,10 +41,15 @@ def getObservedTypeDict():
     # 原则 ： 将 以： 进行分割，并取 ： 前面的字符串 相同的为一类
     _dict = {}
     for process in observerProcessLists:
+        key = ""
         if process.find(":") != -1:
-            _dict[process[0:process.index(":")]].append(process)
+            key = process[0:process.index(":")]
+            # 如果没有监控主进程，只监控 子进程 则会异常
         else:
-            _dict[process] = [process]
+            key = process
+        if key not in _dict:
+            _dict[key] = []
+        _dict[key].append(process)
     return _dict
 
 

@@ -102,16 +102,24 @@ def testCPU(env):
     pass
 
 
+def testGetCpu(env):
+    _StopMark = multiprocessing.Value('b', False)
+    testModel = 1
+    excute(env, _StopMark, testModel)
+
+
 if __name__ == "__main__":
     # obtainindex("Top.log")
-    setObservedLists("com.txznet.music")
-    # setObservedLists("com.txznet.txz;com.txznet.txz:svr1;com.txznet.music")
+    # setObservedLists("com.txznet.music")
+    setObservedLists("com.txznet.txz;com.txznet.txz:svr1;com.txznet.txz:svr6")
     # hello()
     # testMem()
     env = {}
     # 这里的路径需要修改
-    env['dir'] = "MDEyMzQ1Njc4OUFCQ0RFRg==_20200316_185041"
-    env['dev'] = "127.0.0.1:62001"
+    # env['dir'] = "MDEyMzQ1Njc4OUFCQ0RFRg==_20200316_185041"
+    env['dir'] = "UjgwNDIxMTkwNzAyMDA5NA==_20200326_173206"
+    env['dev'] = "R804211907020094"
+    # env['dev'] = "127.0.0.1:62001"
     env = genEnv(test=True, myenv=env)
 
     from ObservedProcess import getObservedTypeDict
@@ -122,7 +130,8 @@ if __name__ == "__main__":
 
     # testCPU()
     testCPU(env)
-    testprintmem(env)
+    # testprintmem(env)
+    # testGetCpu(env)
     # # env['dir'] = "MTI3LjAuM_151447"
     #
     # # 测试cpu 测试通过
