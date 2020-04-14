@@ -17,6 +17,7 @@ from envUtils import genEnv
 from PCMUtils import obtainPcmList
 from FileUtils import closeProc
 
+
 def child_process(_StopMark, recv_conn):
     """ 一直在读管道的数据 """
     while True:
@@ -37,13 +38,13 @@ def init_env(_StopMark):
     writeLog(env, "删除设备原有的 crash pcm asr 的数据")
     deleteOldCrashfile(env)
     writeLog(env, "取出当前设备的Core 的apk")
-    # pullInitialAPK(env)  # 取出 core 的apk  #FIXME: 耗时太久
+    pullInitialAPK(env)  # 取出 core 的apk  #FIXME: 耗时太久
     if info.mode != 3:
         writeLog(env, "您选择了 模式" + str(info.mode))
         writeLog(env, "开始为您取出本目录所有的pcm文件夹")
         fileList = obtainPcmList()
         if len(fileList) == 0:
-            writeLog("请更改当前的模式 或者 导入您需要 老化的音频数据到 pcm文件夹")
+            writeLog(env, "请更改当前的模式 或者 导入您需要 老化的音频数据到 pcm文件夹")
             return None
         print ("size : " + str(fileList[0]))
         # writeLog(env, "正在为您将 " + str(fileList[0]) + " 中的数据 导入到设备")
@@ -80,7 +81,14 @@ def beginTest(info, _StopMark):
     # openlog(env)  # 开启所有的日志
     # killApkPid(env, 'com.txznet.txz')
     env = init_env(_StopMark)
+    if env is None:
+        writeLog({}, "env error")
+        return
     startTime = obtainTime()
+    writeLog(env, "hello world")
+    writeLog(env, "你好世界")
+    writeLog(env, "hello world")
+    writeLog(env, "hello world")
     writeLog(env, "开始抓取数据 cpu mem pid 的数据")
     while True:
         excute(env, _StopMark, info.mode)

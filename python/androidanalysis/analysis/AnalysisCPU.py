@@ -54,6 +54,7 @@ def excute(env, _StopMark, testModel):
                 open(os.path.join(env['top_thread_logpath'], Top_thread_file_name), 'wb') as top_thread_file, \
                 open(os.path.join(env['top_process_logpath'], Top_process_file_name), 'wb') as top_process_file:
             while count:
+                writeLog(env, ">>>------------抓取cpu数据------------")
                 if os.path.exists(stopApkMark):
                     try:
                         sceneTimer.cancel()
@@ -85,8 +86,8 @@ def excute(env, _StopMark, testModel):
                         if pid == -1:
                             # writeLog(env, "can't find process:" + process)
                             continue
-                        start_monitor_pid_cpu_usage("", 1, pid, writeCpuPidCallback)
-                        start_monitor_thread_cpu_usage("", 1, pid, writeCpuThreadCallback)
+                        start_monitor_pid_cpu_usage("", 0.1, pid, writeCpuPidCallback)
+                        start_monitor_thread_cpu_usage("", 0.1, pid, writeCpuThreadCallback)
                     _syslog_p, syslog_file = writeWithPOpen(env, _syslog_p, syslog_file, env['syslogpath'],
                                                             syslog_file_name, _syslog_cmd)
                 syslog_file.write(_syslog_p.stdout.readline().strip() + '\n')
@@ -111,6 +112,7 @@ def excute(env, _StopMark, testModel):
             count = 51200
             if errorstauts:
                 _StopMark.value = True
+        writeLog(env, ">>>------------抓取cpu数据------------ 完成")
 
 
 # 清理出现异常的进程
