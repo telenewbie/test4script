@@ -1,11 +1,9 @@
 # -*- coding:utf-8 -*-
 
-import os
-import time
 import datetime
 import re
 import pylab as pl
-from logFile import *
+from androidanalysis.utils.LogFileUtils import *
 from ProcessUtils import get_process
 
 # ----------------------------------meminfo-图表生成----------------------------------------------------

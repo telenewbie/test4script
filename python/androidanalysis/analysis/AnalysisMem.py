@@ -1,20 +1,20 @@
 # -*- coding:utf-8 -*-
 
-from DrawUtils import *
-from TimeUtils import *
-from adbUtils import *
-from ObservedProcess import getObservedLists
-from ObservedProcess import getProcess
-from ObservedProcess import getProcessInfo
-from ObservedProcess import addProcessInfo
-from ObservedProcess import key_process_stopTime
-from ObservedProcess import key_process_mem
-from ObservedProcess import key_process_x_coordinate
-from ObservedProcess import key_process_x_coordinate_base
-from ObservedProcess import key_process_begin_mem
-from ObservedProcess import key_process_end_mem
-from ProcessUtils import get_process
-from FileUtils import mkdirs
+from androidanalysis.utils.DrawUtils import *
+from androidanalysis.utils.TimeUtils import *
+from androidanalysis.utils.adbUtils import *
+from androidanalysis.ObservedProcess import getObservedLists
+from androidanalysis.ObservedProcess import getProcess
+from androidanalysis.ObservedProcess import getProcessInfo
+from androidanalysis.ObservedProcess import addProcessInfo
+from androidanalysis.ObservedProcess import key_process_stopTime
+from androidanalysis.ObservedProcess import key_process_mem
+from androidanalysis.ObservedProcess import key_process_x_coordinate
+from androidanalysis.ObservedProcess import key_process_x_coordinate_base
+from androidanalysis.ObservedProcess import key_process_begin_mem
+from androidanalysis.ObservedProcess import key_process_end_mem
+from androidanalysis.utils.ProcessUtils import get_process
+from androidanalysis.utils.FileUtils import mkdirs
 
 
 def memPro(env, _StopMark, interval=60):
@@ -55,7 +55,6 @@ def writeProcessMem(env, process=''):
 # 抓取内存数据
 def mymem(env, _StopMark, interval):
     # runAdbCommand(env,['connect','127.0.0.1:62001'])
-    from Process_Constant import get_info
     while True:
         if env['dev'] in readDeviceList():
             writeLog(env, '>>>------------抓取内存数据------------')
@@ -207,8 +206,8 @@ def excuteMemdata(file):
 
 def memDraw(env, adress):
     from ObservedProcess import getObservedTypeDict
-    from mergeData import merge_x
-    from mergeData import merge_y_1
+    from androidanalysis.utils.mergeDataUtils import merge_x
+    from androidanalysis.utils.mergeDataUtils import merge_y_1
     with open(os.path.join(env['result'], 'mem.txt'), 'w') as wdata:
         _dict = getObservedTypeDict()
         for _process_list in _dict:
@@ -245,7 +244,7 @@ def exc_memdata(env):
     startMark = False
     startTime = 0
     adress = env['memlogpath']
-    from osUtils import listdir
+    from androidanalysis.utils.osUtils import listdir
     if adress:
         success_get_all_mem = True
         for file in listdir(adress):
@@ -268,7 +267,7 @@ def exc_memdata(env):
 
 def doMemAnalysis(env):
     # 根据 进程名称进入 相应的进程目录下面
-    from osUtils import listdir
+    from androidanalysis.utils.osUtils import listdir
     for process in getObservedLists():
         dir = os.path.join(env['memmoredata_core'], get_process(process))
         for filename in listdir(dir):
@@ -328,7 +327,7 @@ HeapSize = 6
 
 # 统计com.txznet.txz 的 Dalvik Heap 这一项的占用
 def memoryAnalysis(env):
-    from osUtils import listdir
+    from androidanalysis.utils.osUtils import listdir
     for process in getObservedLists():
         DalvikHeapSizeList = []
         DalvikHeapAllocList = []

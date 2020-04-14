@@ -1,17 +1,14 @@
 # -*- coding:utf-8 -*-
-import os
 import subprocess
 from threading import Timer
-from Constant import *
-from Constant import __RE_REMOTE_DEV
-from Constant import __RE_IP_ADRESS
-from Constant import _RE_TTSAPK
-from Constant import __RE_APK_PATH
-from Constant import _ENV_PCM
-from Constant import _RE_SYSLOGTIME
-from Constant import _TXZ_path
-from winProcessUtils import *
-from logFile import *
+from androidanalysis.config.Constant import *
+from androidanalysis.config.Constant import __RE_REMOTE_DEV
+from androidanalysis.config.Constant import __RE_IP_ADRESS
+from androidanalysis.config.Constant import _RE_TTSAPK
+from androidanalysis.config.Constant import __RE_APK_PATH
+from androidanalysis.config.Constant import _ENV_PCM
+from androidanalysis.utils.winProcessUtils import *
+from androidanalysis.utils.LogFileUtils import *
 
 
 # 开启日志
@@ -517,7 +514,7 @@ def rebootDevice(env, connect=False, setPlan=False):
 
 # 推送文件到设备
 def pushfiletoandroid(env, orgpath, targpaht, suffix='.pcm'):
-    from osUtils import listdir
+    from androidanalysis.utils.osUtils import listdir
     for mfile in listdir(orgpath):
         if mfile.endswith(suffix) >= 0:
             runAdbCommand(env, ['push', os.path.join(orgpath, mfile),

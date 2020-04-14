@@ -1,15 +1,10 @@
 # -*- coding:utf-8 -*-
-from androidanalysis.SoftwareUtils import *
-from androidanalysis.AnalysisCPU import *
-from androidanalysis.ObservedProcess import getProcessInfo
+from androidanalysis.analysis.AnalysisCPU import *
 from androidanalysis.ObservedProcess import setObservedLists
-from androidanalysis.ObservedProcess import key_process_dir
-from androidanalysis.FileUtils import mkdirs
 import multiprocessing
-import ctypes
-from androidanalysis.envUtils import genEnv
+from androidanalysis.utils.envUtils import genEnv
 
-from androidanalysis.Constant import setOver
+from androidanalysis.config.Constant import setOver
 
 
 def hello():

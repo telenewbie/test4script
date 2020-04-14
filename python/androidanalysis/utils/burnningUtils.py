@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
-from logFile import writeLog
-from adbUtils import runAdbCommand
+from androidanalysis.utils.LogFileUtils import writeLog
+from androidanalysis.utils.adbUtils import runAdbCommand
 
 
 # 停止老化

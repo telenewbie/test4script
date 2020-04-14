@@ -1,6 +1,6 @@
 # coding:utf-8
 # 进程相关数据
-import Info
+from androidanalysis.bean import Info
 
 g_info = Info
 

@@ -4,16 +4,12 @@ from Tkinter import *
 import Queue
 import multiprocessing
 
-from threading import Timer
-import os
 from PreBurningUtils import *
-from Constant import *
 from FileUtils import *
-from adbUtils import *
+from androidanalysis.utils.adbUtils import *
 
 import traceback
-from logFile import *
-from Constant import setOver
+from androidanalysis.utils.LogFileUtils import *
 
 my_stop = multiprocessing.Value('b', False)
 
@@ -205,7 +201,7 @@ def preburning_stop(mQueue):
 
 
 write_pipe = []
-from Info import Info
+from androidanalysis.bean.Info import Info
 
 info = Info()
 

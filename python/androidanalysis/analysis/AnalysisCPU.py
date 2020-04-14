@@ -1,24 +1,11 @@
 # -*- coding:utf-8 -*-
 
-import traceback
+from androidanalysis.utils.PreBurningUtils import *
+from androidanalysis.utils.burnningUtils import stopPreburn
+from androidanalysis.utils.hprofUtils import *
 
-from TimerUtils import *
-from adbUtils import *
-from SoftwareUtils import *
-from ObservedProcess import getObservedLists
-from ObservedProcess import key_process_cpu
-from ObservedProcess import addProcessInfo
-from ObservedProcess import key_process_cpu_x
-from PreBurningUtils import *
-from burnningUtils import stopPreburn
-from hprofUtils import *
-from Constant import nameinfo
-from Constant import cpu_info
-
-from Constant import errorstauts
 import collections
 import numpy as np
-from ObservedProcess import printInfos
 
 
 # 分析 CPU
@@ -293,9 +280,8 @@ def processall(list1, list2, list3=None, list4=None, list5=None):
 def commonanalysedata(env):
     from ObservedProcess import getObservedTypeDict
     from ObservedProcess import getProcess
-    from mergeData import merge_x
-    from mergeData import merge_y
-    from mergeData import merge_y_1
+    from androidanalysis.utils.mergeDataUtils import merge_x
+    from androidanalysis.utils.mergeDataUtils import merge_y_1
     obtianProcPidStatinfo(env, amalgamateFile(env, env['top_process_logpath']))
     # obtianCapabilityinfo(env, amalgamateFile(env, env['top_process_logpath']))
     # if data:
@@ -329,7 +315,7 @@ def commonanalysedata(env):
 def amalgamateFile(env, dir):
     filename = os.path.join(env['result'], 'amalgamatefile.txt')
     result = open(filename, 'w')
-    from osUtils import listdir
+    from androidanalysis.utils.osUtils import listdir
     for file in listdir(dir):
         with open(os.path.join(dir, file)) as datas:
             result.writelines(datas)

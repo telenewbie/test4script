@@ -3,7 +3,7 @@
 import os
 import time
 import base64
-from ObservedProcess import getObservedLists
+from androidanalysis.ObservedProcess import getObservedLists
 from ProcessUtils import initProcess
 from FileUtils import mkdirs
 
@@ -25,7 +25,7 @@ def genEnv(dev=None, test=False, myenv={}):
 
         print env['tag']
         env['dir'] = env['tag']
-    env['dir'] = os.path.join("build", env['dir'])
+    env['dir'] = os.path.join("../build", env['dir'])
 
     mkdirs(env['dir'])  # 只有一台设备就创建时间名的目录，多台设备就创建含设备编码的目录
 

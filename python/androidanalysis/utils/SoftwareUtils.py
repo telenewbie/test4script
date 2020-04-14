@@ -1,14 +1,6 @@
 # -*- coding:utf-8 -*-
 
-import os
-import time
-import datetime
-import re
-
-from adbUtils import *
-from Constant import nameinfo
-from Constant import cpu_info
-from Constant import memoryinfo_rss
+from androidanalysis.utils.adbUtils import *
 from ProcessUtils import get_process_task
 from ProcessUtils import get_process_fd
 from ProcessUtils import get_process_fd_path

@@ -1,21 +1,16 @@
 # -*- coding:utf-8 -*-
 
-import os
-import threading
 import traceback
-from adbUtils import *
-from TimeUtils import *
-from logFile import *
-from SoftwareUtils import *
-from ObservedProcess import getObservedLists
-from ObservedProcess import addProcessInfo
-from ObservedProcess import isNullprocessInfo
-from ObservedProcess import haveProcessInfo
-from ObservedProcess import getProcessInfo
-from ObservedProcess import key_process_pid
+from androidanalysis.utils.TimeUtils import *
+from androidanalysis.utils.SoftwareUtils import *
+from androidanalysis.ObservedProcess import getObservedLists
+from androidanalysis.ObservedProcess import addProcessInfo
+from androidanalysis.ObservedProcess import isNullprocessInfo
+from androidanalysis.ObservedProcess import haveProcessInfo
+from androidanalysis.ObservedProcess import getProcessInfo
+from androidanalysis.ObservedProcess import key_process_pid
 # from ObservedProcess import key_process_startTime
-from ObservedProcess import key_process_stopTime
-from Constant import getOver
+from androidanalysis.ObservedProcess import key_process_stopTime
 
 
 def pidPro(env, _StopMark, interval=5):

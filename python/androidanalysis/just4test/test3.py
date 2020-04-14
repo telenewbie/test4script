@@ -5,7 +5,6 @@ if __name__ == '__main__':
     for i in _list:
         print "xxx" + i
     print "hello"
-    from androidanalysis.osUtils import *
 
     #
     # for i in listdir('.\MDEyMzQ1Njc4OUFCQ0RFRg==_20200316_185041\memmoredata_core\com.txznet.music'):

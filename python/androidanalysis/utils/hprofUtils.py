@@ -1,11 +1,7 @@
 # -*- coding:utf-8 -*-
 
-import os
-import time
-import datetime
-import re
-from adbUtils import *
-from ObservedProcess import getObservedLists
+from androidanalysis.utils.adbUtils import *
+from androidanalysis.ObservedProcess import getObservedLists
 
 
 # 每隔10min 获取待观测进程的 内存信息 通过adb dumpsys meminfo

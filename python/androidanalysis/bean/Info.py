@@ -1,7 +1,6 @@
 # coding=utf-8
 
-from multiprocessing import Value
-from Constant import *
+from androidanalysis.config.Constant import *
 
 class Info:
     """

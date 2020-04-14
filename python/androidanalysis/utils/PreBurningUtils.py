@@ -1,31 +1,18 @@
 # -*- coding:utf-8 -*-
 
-import os
-import time
-import base64
-import threading
-from FileUtils import *
-from Constant import *
-from envUtils import *
-from logFile import writeLog
-from logFile import openlog
-from TimeUtils import *
-from PCMUtils import *
-from adbUtils import *
 from SceneUtils import *
 from TimerUtils import *
-from AnalysisCPU import *
-from AnalysisMem import *
-from AnalysisDataTraffic import *
+from androidanalysis.analysis.AnalysisCPU import *
+from androidanalysis.analysis.AnalysisMem import *
+from androidanalysis.analysis.AnalysisDataTraffic import *
 from SoftwareUtils import *
-from ObservedProcess import getProcessInfo
-from ObservedProcess import getObservedLists
-from ObservedProcess import getprocessInfoKeyLen
-from ObservedProcess import key_process_pid
+from androidanalysis.ObservedProcess import getObservedLists
+from androidanalysis.ObservedProcess import getprocessInfoKeyLen
+from androidanalysis.ObservedProcess import key_process_pid
 from burnningUtils import stopPreburn
-from ObservedProcess import setObservedLists
+from androidanalysis.ObservedProcess import setObservedLists
 
-from Process_Constant import get_info, set_info
+from androidanalysis.Process_Constant import get_info, set_info
 
 
 def child_process(_StopMark, recv_conn):

@@ -1,17 +1,11 @@
 # -*- coding:utf-8 -*-
 
-import os
-from threading import Timer
-import threading
-import time
-from adbUtils import *
-from AnalysisPid import *
-from AnalysisMem import *
+from androidanalysis.analysis.AnalysisPid import *
+from androidanalysis.analysis.AnalysisMem import *
 
 
 # 定时拉取日志 crash anr tombstones 等 到指定的文件夹
 def getReport(env, action='', interval=3600, Timeing=True):
-    from Process_Constant import get_info
     global txzlogtimer
     root = env.get('dir', None)
     log_path = os.path.join(root, action + time.strftime('%Y%m%d_%H%M%S'))

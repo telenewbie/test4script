@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-from logFile import *
+from androidanalysis.utils.LogFileUtils import *
 
 # 数据流量
 
@@ -13,7 +13,7 @@ def flowCounter(env, userid, hour):
     if userid < 0:
         return False
     result = []
-    from osUtils import listdir
+    from androidanalysis.utils.osUtils import listdir
     filelist = listdir(env['flow'])
     if len(filelist) > 1:
         for filename in filelist:

@@ -2,14 +2,14 @@
 
 import sys
 import time
-from Constant import _TXZ_path
-from Constant import _RE_SYSLOGTIME
+from androidanalysis.config.Constant import _TXZ_path
+from androidanalysis.config.Constant import _RE_SYSLOGTIME
 import tkMessageBox
 import os
 
 
 def openlog(env):
-    from adbUtils import runAdbCommand
+    from androidanalysis.utils.adbUtils import runAdbCommand
     runAdbCommand(env, ['shell', 'mkdir', '-p', _TXZ_path])
     runAdbCommand(env, ['shell', 'touch', _TXZ_path + 'log_enable_file'])
     runAdbCommand(env, ['shell', 'touch', _TXZ_path + 'ENABLE_TRACE_GPS.debug'])
