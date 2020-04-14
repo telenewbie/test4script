@@ -47,7 +47,7 @@ def obtainfd(env, t, pid, item):
     stdoutdata, stderrdata = datas.communicate()
     with open(os.path.join(get_process_fd_path(env, item), get_process_fd(item) + t + r'.txt'), 'w') as mfile:
         mfile.write(stdoutdata)
-        writeLog(env, '{1} FdCount:{0}'.format(len(stdoutdata.strip().split('\n')), item))
+        # writeLog(env, '{1} FdCount:{0}'.format(len(stdoutdata.strip().split('\n')), item))
         mfile.close()
         del mfile
     datas.terminate()

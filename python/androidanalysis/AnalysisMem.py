@@ -67,7 +67,6 @@ def mymem(env, _StopMark, interval):
         if _StopMark.value:
             break
 
-        print ("内存抓取时间间隔：" + str(interval))
         time.sleep(interval)
     writeLog(env, ">>>------------抓取内存数据------------ 完成")
 

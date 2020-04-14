@@ -59,7 +59,7 @@ def getPidFromPackage(env, process):
             # print ("hello " + ps[-1].strip())
             # print ps[-1].strip()
             if ps[-1].strip() == process:
-                print("i find it " + ps[0] + ":" + ps[1])
+                # print("i find it " + ps[0] + ":" + ps[1])
                 return int(ps[1])
     except IndexError:
         writeLog(env, "ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
@@ -103,7 +103,7 @@ def obtainpid(env, _StopMark, interval):
                     # print ">>>>", process, "<<<<", processsearchinfo
                     if processsearchinfo:
                         txz_pid = partinfo.split()[pid_index]
-                        writeLog(env, '>>>当前%s的PID为：%s' % (process, txz_pid))
+                        # writeLog(env, '>>>当前%s的PID为：%s' % (process, txz_pid))
                         # fd
                         obtainfd(env, t, txz_pid, process)
                         # task

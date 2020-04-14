@@ -46,7 +46,6 @@ def merge_y(x_list, x_name, y_name, iterables):
 
 
 def merge_y_1(x_list, x_name, y_name, iterables):
-    print ("start --------------merge yyy")
     '''
     如果不存在相应的 x坐标 则需要将 之前的值 进行累加
 

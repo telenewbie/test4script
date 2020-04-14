@@ -56,7 +56,8 @@ def init_env(_StopMark):
         if len(fileList) == 0:
             writeLog("请更改当前的模式 或者 导入您需要 老化的音频数据到 pcm文件夹")
             return None
-        writeLog(env, "正在为您将 ${0} 中的数据 导入到设备".format(fileList[0]))
+        print ("size : " + str(fileList[0]))
+        # writeLog(env, "正在为您将 " + str(fileList[0]) + " 中的数据 导入到设备")
         ret = prepareDevice(env, _StopMark, fileList[0])
         if ret == -1:
             writeLog(env, "请确定 老化工具的apk 在当前目录上面")
@@ -116,7 +117,7 @@ def beginTest(info, _StopMark):
     obtainHprof(env, 'end')
     time.sleep(3)
 
-    writeLog(env, "拉取文件到asr hprof 文件到电脑上")
+    writeLog(env, "拉取文件 asr hprof 文件到电脑上")
     runAdbCommand(env, ['pull', '/sdcard/preburning/asr', env['result']])
     runAdbCommand(env, ['pull', '/sdcard/hprof/', env['hprof']])
     writeLog(env,
