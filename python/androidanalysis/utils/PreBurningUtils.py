@@ -6,14 +6,16 @@ from androidanalysis.analysis.AnalysisCPU import *
 from androidanalysis.analysis.AnalysisMem import *
 from androidanalysis.analysis.AnalysisDataTraffic import *
 from SoftwareUtils import *
-from androidanalysis.ObservedProcess import getObservedLists
-from androidanalysis.ObservedProcess import getprocessInfoKeyLen
-from androidanalysis.ObservedProcess import key_process_pid
+from androidanalysis.constant.ObservedProcess import getObservedLists
+from androidanalysis.constant.ObservedProcess import getprocessInfoKeyLen
+from androidanalysis.constant.ObservedProcess import key_process_pid
 from burnningUtils import stopPreburn
-from androidanalysis.ObservedProcess import setObservedLists
+from androidanalysis.constant.ObservedProcess import setObservedLists
 
-from androidanalysis.Process_Constant import get_info, set_info
-
+from androidanalysis.constant.Process_Constant import get_info, set_info
+from envUtils import genEnv
+from PCMUtils import obtainPcmList
+from FileUtils import closeProc
 
 def child_process(_StopMark, recv_conn):
     """ 一直在读管道的数据 """
@@ -35,7 +37,7 @@ def init_env(_StopMark):
     writeLog(env, "删除设备原有的 crash pcm asr 的数据")
     deleteOldCrashfile(env)
     writeLog(env, "取出当前设备的Core 的apk")
-    pullInitialAPK(env)  # 取出 core 的apk  #FIXME: 耗时太久
+    # pullInitialAPK(env)  # 取出 core 的apk  #FIXME: 耗时太久
     if info.mode != 3:
         writeLog(env, "您选择了 模式" + str(info.mode))
         writeLog(env, "开始为您取出本目录所有的pcm文件夹")

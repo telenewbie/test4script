@@ -1,9 +1,9 @@
 # -*- coding:utf-8 -*-
 
-from androidanalysis.config.Constant import _ENV_PCM
+from androidanalysis.constant.Constant import _ENV_PCM
 from PreBurningUtils import *
 from burnningUtils import stopPreburn
-from androidanalysis.Process_Constant import get_info
+from androidanalysis.constant.Process_Constant import get_info
 
 
 def changeSceneTimer(env, filelist, scenelist, testModel, _TimeValue, index, intervalVar):

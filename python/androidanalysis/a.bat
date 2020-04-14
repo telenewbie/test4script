@@ -1,3 +1,0 @@
-python TestForNewbie.py
-
-pause

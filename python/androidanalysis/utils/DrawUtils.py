@@ -174,7 +174,7 @@ def cpu_draw_1(env, name, dict, x_name, y_name):
             count = 0
     if hasError:
         # 不能绘制出 数据
-        from ObservedProcess import printInfos
+        from androidanalysis.constant.ObservedProcess import printInfos
         printInfos()
         return
     writeLog(env, 'CPU: {0}'.format(title.replace('\n', ' | ')))

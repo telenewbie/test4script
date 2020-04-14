@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from androidanalysis.config.Constant import *
+from androidanalysis.constant.Constant import *
 
 class Info:
     """

@@ -3,16 +3,16 @@
 from androidanalysis.utils.DrawUtils import *
 from androidanalysis.utils.TimeUtils import *
 from androidanalysis.utils.adbUtils import *
-from androidanalysis.ObservedProcess import getObservedLists
-from androidanalysis.ObservedProcess import getProcess
-from androidanalysis.ObservedProcess import getProcessInfo
-from androidanalysis.ObservedProcess import addProcessInfo
-from androidanalysis.ObservedProcess import key_process_stopTime
-from androidanalysis.ObservedProcess import key_process_mem
-from androidanalysis.ObservedProcess import key_process_x_coordinate
-from androidanalysis.ObservedProcess import key_process_x_coordinate_base
-from androidanalysis.ObservedProcess import key_process_begin_mem
-from androidanalysis.ObservedProcess import key_process_end_mem
+from androidanalysis.constant.ObservedProcess import getObservedLists
+from androidanalysis.constant.ObservedProcess import getProcess
+from androidanalysis.constant.ObservedProcess import getProcessInfo
+from androidanalysis.constant.ObservedProcess import addProcessInfo
+from androidanalysis.constant.ObservedProcess import key_process_stopTime
+from androidanalysis.constant.ObservedProcess import key_process_mem
+from androidanalysis.constant.ObservedProcess import key_process_x_coordinate
+from androidanalysis.constant.ObservedProcess import key_process_x_coordinate_base
+from androidanalysis.constant.ObservedProcess import key_process_begin_mem
+from androidanalysis.constant.ObservedProcess import key_process_end_mem
 from androidanalysis.utils.ProcessUtils import get_process
 from androidanalysis.utils.FileUtils import mkdirs
 
@@ -205,7 +205,7 @@ def excuteMemdata(file):
 
 
 def memDraw(env, adress):
-    from ObservedProcess import getObservedTypeDict
+    from androidanalysis.constant.ObservedProcess import getObservedTypeDict
     from androidanalysis.utils.mergeDataUtils import merge_x
     from androidanalysis.utils.mergeDataUtils import merge_y_1
     with open(os.path.join(env['result'], 'mem.txt'), 'w') as wdata:
@@ -230,10 +230,7 @@ def memDraw(env, adress):
             core_dict["all"][key_process_mem] = _all_y_list
 
             wdata.write('{0}:{1}\n'.format(process, core_dict))
-            # from ObservedProcess import printInfos
-            # print("----------------------")
-            # printInfos()
-            # print("----------------------")
+
             # 需要进行分类绘制
             mem_draw_1(env, "mem_all", core_dict, key_process_x_coordinate, key_process_mem)
 

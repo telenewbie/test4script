@@ -19,10 +19,10 @@ def write2File(process, pid, cpu_usage):
 # top 进程 前 10的数据
 # logcat -v time 的数据
 def excute(env, _StopMark, testModel):
-    from Proc4CPU import start_monitor_pid_cpu_usage, start_monitor_thread_cpu_usage
-    from ObservedProcess import getObservedLists
+    from androidanalysis.utils.CpuUtils import start_monitor_pid_cpu_usage, start_monitor_thread_cpu_usage
+    from androidanalysis.constant.ObservedProcess import getObservedLists
     from AnalysisPid import getPidFromPackage
-    from Process_Constant import get_info
+    from androidanalysis.constant.Process_Constant import get_info
     global errorstauts
     global sceneTimer
     info = get_info()
@@ -102,7 +102,8 @@ def excute(env, _StopMark, testModel):
                 except:
                     pass
                 writeWithPOpen(env, _syslog_p, syslog_file, env['syslogpath'], syslog_file_name, _syslog_cmd, True)
-                timerMark = mytimercancel(env, timerMark)
+                from androidanalysis.utils.TimerUtils import mytimercancel
+                mytimercancel(env, timerMark)
                 break
             syslog_file.close()
             top_thread_file.close()
@@ -115,6 +116,7 @@ def excute(env, _StopMark, testModel):
 # 清理出现异常的进程
 # closeObtain 更名为 writeWithPOpen
 def writeWithPOpen(env, p, log_file, logpath, logfilename, cmd, killmark=False):
+    import traceback
     if p.poll() != None or killmark:
         a = p.stdout.flush()
         if a != None:
@@ -150,6 +152,7 @@ def obtianProcPidStatinfo(env, file):
     :param file: 情况
     :return:
     '''
+    from androidanalysis.constant.ObservedProcess import key_process_cpu_x, key_process_cpu
     with open(file) as datas:
         lines = (line.strip() for line in datas)
         count = 0
@@ -171,6 +174,7 @@ def obtianProcPidStatinfo(env, file):
 
 # 处理日志数据
 def obtianCapabilityinfo(env, file):
+    from androidanalysis.constant.ObservedProcess import key_process_cpu_x, key_process_cpu
     global cpu_info
     global memoryinfo_rss
     global nameinfo
@@ -278,8 +282,8 @@ def processall(list1, list2, list3=None, list4=None, list5=None):
 
 # 普通画图---cpu采取补零，导致通过list空的判断失效
 def commonanalysedata(env):
-    from ObservedProcess import getObservedTypeDict
-    from ObservedProcess import getProcess
+    from androidanalysis.constant.ObservedProcess import getObservedTypeDict
+    from androidanalysis.constant.ObservedProcess import getProcess, key_process_cpu_x, key_process_cpu
     from androidanalysis.utils.mergeDataUtils import merge_x
     from androidanalysis.utils.mergeDataUtils import merge_y_1
     obtianProcPidStatinfo(env, amalgamateFile(env, env['top_process_logpath']))

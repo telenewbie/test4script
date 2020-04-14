@@ -3,7 +3,7 @@
 import os
 import time
 import base64
-from androidanalysis.ObservedProcess import getObservedLists
+from androidanalysis.constant.ObservedProcess import getObservedLists
 from ProcessUtils import initProcess
 from FileUtils import mkdirs
 

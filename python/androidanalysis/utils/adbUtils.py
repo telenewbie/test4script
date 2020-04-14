@@ -1,12 +1,12 @@
 # -*- coding:utf-8 -*-
 import subprocess
 from threading import Timer
-from androidanalysis.config.Constant import *
-from androidanalysis.config.Constant import __RE_REMOTE_DEV
-from androidanalysis.config.Constant import __RE_IP_ADRESS
-from androidanalysis.config.Constant import _RE_TTSAPK
-from androidanalysis.config.Constant import __RE_APK_PATH
-from androidanalysis.config.Constant import _ENV_PCM
+from androidanalysis.constant.Constant import *
+from androidanalysis.constant.Constant import __RE_REMOTE_DEV
+from androidanalysis.constant.Constant import __RE_IP_ADRESS
+from androidanalysis.constant.Constant import _RE_TTSAPK
+from androidanalysis.constant.Constant import __RE_APK_PATH
+from androidanalysis.constant.Constant import _ENV_PCM
 from androidanalysis.utils.winProcessUtils import *
 from androidanalysis.utils.LogFileUtils import *
 
@@ -553,7 +553,7 @@ def getReport(env, action='', Timeing=True):
     os.makedirs(log_path)
     threading.Thread(target=pullLog, args=(env, log_path)).start()
     if Timeing:
-        from Process_Constant import get_info
+        from androidanalysis.constant.Process_Constant import get_info
         info = get_info()
         txzlogtimer = Timer(info.interval_pull_log, getReport, (env, 'txzlog_'))
         # txzlogtimer = Timer(1320,getReport,(env,))

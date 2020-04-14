@@ -1,10 +1,10 @@
 # -*- coding:utf-8 -*-
 from androidanalysis.analysis.AnalysisCPU import *
-from androidanalysis.ObservedProcess import setObservedLists
+from androidanalysis.constant.ObservedProcess import setObservedLists
 import multiprocessing
 from androidanalysis.utils.envUtils import genEnv
 
-from androidanalysis.config.Constant import setOver
+from androidanalysis.constant.Constant import setOver
 
 
 def hello():
@@ -119,7 +119,7 @@ if __name__ == "__main__":
     # env['dev'] = "127.0.0.1:62001"
     env = genEnv(test=True, myenv=env)
 
-    from androidanalysis.ObservedProcess import getObservedTypeDict
+    from androidanalysis.constant.ObservedProcess import getObservedTypeDict
 
     _dict = getObservedTypeDict()
     for process in _dict:

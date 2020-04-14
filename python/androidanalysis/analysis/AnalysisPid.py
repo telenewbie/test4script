@@ -3,14 +3,13 @@
 import traceback
 from androidanalysis.utils.TimeUtils import *
 from androidanalysis.utils.SoftwareUtils import *
-from androidanalysis.ObservedProcess import getObservedLists
-from androidanalysis.ObservedProcess import addProcessInfo
-from androidanalysis.ObservedProcess import isNullprocessInfo
-from androidanalysis.ObservedProcess import haveProcessInfo
-from androidanalysis.ObservedProcess import getProcessInfo
-from androidanalysis.ObservedProcess import key_process_pid
-# from ObservedProcess import key_process_startTime
-from androidanalysis.ObservedProcess import key_process_stopTime
+from androidanalysis.constant.ObservedProcess import getObservedLists
+from androidanalysis.constant.ObservedProcess import addProcessInfo
+from androidanalysis.constant.ObservedProcess import isNullprocessInfo
+from androidanalysis.constant.ObservedProcess import haveProcessInfo
+from androidanalysis.constant.ObservedProcess import getProcessInfo
+from androidanalysis.constant.ObservedProcess import key_process_pid
+from androidanalysis.constant.ObservedProcess import key_process_stopTime
 
 
 def pidPro(env, _StopMark, interval=5):

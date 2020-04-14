@@ -24,7 +24,7 @@ def mytimer(env, _StopMark):
     global txzlogtimer
     global pidtimer
     global memtimer
-    from Process_Constant import get_info
+    from androidanalysis.constant.Process_Constant import get_info
     info = get_info()
     txzlogtimer = Timer(info.interval_pull_log, getReport, (env, 'txzlog_', info.interval_pull_log))
     pidtimer = Timer(info.interval_pid_fd_task, pidPro, (
@@ -37,19 +37,19 @@ def mytimer(env, _StopMark):
 
 
 # 取消所有定时器
-def mytimercancel(env, timerMark):
+def mytimercancel(env, timer_mark):
     try:
-        while timerMark:
+        while timer_mark:
             for i in threading.enumerate():
-                if type(i) == threading._Timer:
+                if type(i) == threading.Timer:
                     i.cancel()
             time.sleep(0.1)
             for i in threading.enumerate():
-                if type(i) == threading._Timer:
-                    timerMark = True
+                if type(i) == threading.Timer:
+                    timer_mark = True
                     break
                 else:
-                    timerMark = False
+                    timer_mark = False
     except:
         writeLog(env, traceback.print_exc())
-    return timerMark
+    return timer_mark

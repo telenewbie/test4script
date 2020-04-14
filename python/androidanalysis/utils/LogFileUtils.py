@@ -2,8 +2,8 @@
 
 import sys
 import time
-from androidanalysis.config.Constant import _TXZ_path
-from androidanalysis.config.Constant import _RE_SYSLOGTIME
+from androidanalysis.constant.Constant import _TXZ_path
+from androidanalysis.constant.Constant import _RE_SYSLOGTIME
 import tkMessageBox
 import os
 

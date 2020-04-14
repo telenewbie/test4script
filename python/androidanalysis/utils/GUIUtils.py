@@ -47,7 +47,6 @@ class GuiPart(Frame):
         Radiobutton(self.root, text='文本模式', variable=testModelVar, value=2).grid(row=rowIndex, column=2, sticky='W')
         Radiobutton(self.root, text='什么都不做', variable=testModelVar, value=3).grid(row=rowIndex, column=3, sticky='W')
 
-        # from Constant import *
         rowIndex += 1  # 4
         global timeValue
         timeValue = StringVar(value=DEFAULT_INTERVAL_CHANGE_WIFI)
