@@ -182,7 +182,7 @@ def readDeviceList():
 
 # 备份IP地址
 def backupIPadress():
-    os.system('adb devices')
+    # os.system('adb devices')
     ret = []
     p = subprocess.Popen(['adb', 'devices'], stdout=subprocess.PIPE)
     outstr, errstr = p.communicate()
@@ -191,9 +191,12 @@ def backupIPadress():
         dev = __RE_IP_ADRESS.search(dev)
         if dev:
             ret.append(dev.group())
-    os.system('adb kill-server')
-    for ip in ret:
-        os.system('adb connect %s' % ip)
+    print ret
+    if len(ret) > 0:
+        print("i coming")
+        os.system('adb kill-server')
+        for ip in ret:
+            os.system('adb connect %s' % ip)
 
 
 # 通过pid杀应用 通过 ps 获取 指定包名 的 进程号，然后kill pid即可
@@ -231,6 +234,7 @@ def deleteOldCrashfile(env):
     runAdbCommand(env, ['shell', 'rm', '/sdcard/preburning/asr/*'])
     runAdbCommand(env, ['shell', 'rm', '/sdcard/preburning/pcm/*'])
 
+
 # 取出 现有的 core的apk
 def pullInitialAPK(env):
     corePath = runAdbCommand(env, ['shell', 'pm', 'path', 'com.txznet.txz'], check=obtaincontent)
@@ -246,16 +250,16 @@ def prepareDevice(env, _StopMark, curpath):
     writeLog(env, '>>>准备环境')
     obtainRoot(env)
     if not checkenv(env, Preburning, 'preburning.apk', _StopMark):
-        return False
+        return -1
     if _StopMark.value:
-        return False
+        return -2
     launch_apk(env, 'com.txznet.txz')
     launch_apk(env, 'com.txznet.preburning')
     runAdbCommand(env, ['shell', 'mkdir', '-p', _ENV_PCM + 'pcm'])
     pushfiletoandroid(env, curpath, _ENV_PCM + 'pcm/')
     writeLog(env, 'Current Scene:{0}'.format(curpath))
     runAdbCommand(env, ['push', './command.txt', _ENV_PCM])
-    return True
+    return 0
 
 
 # monkey启动apk
@@ -552,7 +556,9 @@ def getReport(env, action='', Timeing=True):
     os.makedirs(log_path)
     threading.Thread(target=pullLog, args=(env, log_path)).start()
     if Timeing:
-        txzlogtimer = Timer(3600, getReport, (env, 'txzlog_'))
+        from Process_Constant import get_info
+        info = get_info()
+        txzlogtimer = Timer(info.interval_pull_log, getReport, (env, 'txzlog_'))
         # txzlogtimer = Timer(1320,getReport,(env,))
         txzlogtimer.start()
     print 'obtain log compeled'

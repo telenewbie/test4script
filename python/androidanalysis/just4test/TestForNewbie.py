@@ -1,15 +1,15 @@
 # -*- coding:utf-8 -*-
-from SoftwareUtils import *
-from AnalysisCPU import *
-from ObservedProcess import getProcessInfo
-from ObservedProcess import setObservedLists
-from ObservedProcess import key_process_dir
-from FileUtils import mkdirs
+from androidanalysis.SoftwareUtils import *
+from androidanalysis.AnalysisCPU import *
+from androidanalysis.ObservedProcess import getProcessInfo
+from androidanalysis.ObservedProcess import setObservedLists
+from androidanalysis.ObservedProcess import key_process_dir
+from androidanalysis.FileUtils import mkdirs
 import multiprocessing
 import ctypes
-from envUtils import genEnv
+from androidanalysis.envUtils import genEnv
 
-from Constant import setOver
+from androidanalysis.Constant import setOver
 
 
 def hello():
@@ -117,12 +117,14 @@ if __name__ == "__main__":
     env = {}
     # 这里的路径需要修改
     # env['dir'] = "MDEyMzQ1Njc4OUFCQ0RFRg==_20200316_185041"
-    env['dir'] = "UjgwNDIxMTkwNzAyMDA5NA==_20200326_173206"
-    env['dev'] = "R804211907020094"
+    env['dir'] = r"..\..\build\result"
+    # env['dev'] = "R804211907020094"
+
+
     # env['dev'] = "127.0.0.1:62001"
     env = genEnv(test=True, myenv=env)
 
-    from ObservedProcess import getObservedTypeDict
+    from androidanalysis.ObservedProcess import getObservedTypeDict
 
     _dict = getObservedTypeDict()
     for process in _dict:
@@ -131,31 +133,4 @@ if __name__ == "__main__":
     # testCPU()
     testCPU(env)
     # testprintmem(env)
-    # testGetCpu(env)
-    # # env['dir'] = "MTI3LjAuM_151447"
-    #
-    # # 测试cpu 测试通过
-    # env['top_process_logpath'] = os.path.join(env['dir'], 'top_process_data')
-    # env['result'] = os.path.join(env['dir'], 'Result')
-    # commonanalysedata(env) # 通过
-    #
-    # # 测试内存
-    # env['memlogpath'] = os.path.join(env['dir'], 'memdata')
-    # env['memmoredata_core'] = os.path.join(env['dir'], 'memmoredata_core')
-    # # os.mkdir(r"""hello:a""")  # 冒号是盘符
-    # for process in getObservedLists():
-    #     initProcess(env, process)
-    #
-    # env['dev'] = "127.0.0.1:62001"
-    # # setOver(True)
-    # # 初步结论，不同的文件对于同一个变量 即使是global的形态也不会改变另一个文件的值
-    # exc_memdata(env)  # 通过
-    # testprintmem()
-    # # obtainHprof(env,"end")
-    # # mytimer(env)
-    # # androidanalysis/MTI3LjAuMC4xOjYyMDAx_20200312_181249
-    # memTrend(env)
-    # memoryAnalysis(env)
-    # _StopMark = multiprocessing.Value(ctypes.c_bool, False)
-    #
-    # excute(env, _StopMark, 1)
+

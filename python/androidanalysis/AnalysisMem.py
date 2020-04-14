@@ -17,9 +17,9 @@ from ProcessUtils import get_process
 from FileUtils import mkdirs
 
 
-def memPro(env, _StopMark):
+def memPro(env, _StopMark, interval=60):
     # global memtimer
-    threading.Thread(target=mymem, args=(env, _StopMark)).start()
+    threading.Thread(target=mymem, args=(env, _StopMark, interval)).start()
     # memtimer = Timer(1, memPro, (env,))
     # memtimer.start()
 
@@ -53,8 +53,9 @@ def writeProcessMem(env, process=''):
 
 
 # 抓取内存数据
-def mymem(env, _StopMark):
+def mymem(env, _StopMark, interval):
     # runAdbCommand(env,['connect','127.0.0.1:62001'])
+    from Process_Constant import get_info
     while True:
         if env['dev'] in readDeviceList():
             writeLog(env, '>>>------------抓取内存数据------------')
@@ -63,10 +64,11 @@ def mymem(env, _StopMark):
                 writeProcessMem(env, process)
             writeProcessMem(env)  # 抓取总体的内存信息
         # 休眠1s 继续执行 ，什么时候结束？
-        print _StopMark.value
         if _StopMark.value:
             break
-        time.sleep(1)
+
+        print ("内存抓取时间间隔：" + str(interval))
+        time.sleep(interval)
     writeLog(env, ">>>------------抓取内存数据------------ 完成")
 
 
@@ -285,7 +287,7 @@ def doMemAnalysis(env):
                                 continue
                             i += 1
                             if i == 2:
-                                excuteMemData(process,filename,value)
+                                excuteMemData(process, filename, value)
                                 # print ",value:" + value
                         pass
                     pass

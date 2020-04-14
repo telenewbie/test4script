@@ -3,6 +3,7 @@
 from Tkinter import *
 import Queue
 import multiprocessing
+
 from threading import Timer
 import os
 from PreBurningUtils import *
@@ -18,6 +19,7 @@ my_stop = multiprocessing.Value('b', False)
 
 
 class GuiPart(Frame):
+
     def __init__(self, parent):
         Frame.__init__(self, parent)
         self.root = parent
@@ -31,6 +33,7 @@ class GuiPart(Frame):
                                                                                                    columnspan=22)
         rowIndex += 1
         Label(self.root, text='观测的进程名称 英文符号<;>进行分割').grid(row=rowIndex, column=0, sticky='W', columnspan=4)
+
         rowIndex += 1
         global processNames
         processNames = StringVar(value="com.txznet.txz;com.txznet.txz:svr1")
@@ -48,13 +51,51 @@ class GuiPart(Frame):
         Radiobutton(self.root, text='文本模式', variable=testModelVar, value=2).grid(row=rowIndex, column=2, sticky='W')
         Radiobutton(self.root, text='什么都不做', variable=testModelVar, value=3).grid(row=rowIndex, column=3, sticky='W')
 
+        # from Constant import *
         rowIndex += 1  # 4
         global timeValue
-        timeValue = StringVar()
+        timeValue = StringVar(value=DEFAULT_INTERVAL_CHANGE_WIFI)
         Label(self.root, text='定时改变wifi状态（ms），默认不启动').grid(row=rowIndex, column=0, sticky='W', columnspan=4)
         Entry(self.root,
               width=30,
               textvariable=timeValue
+              ).grid(row=rowIndex, column=3, columnspan=4, sticky='W')
+        rowIndex += 1
+        global cpu_interval
+        cpu_interval = IntVar(value=DEFAULT_INTERVAL_CPU)
+        Label(self.root, text='拉取cpu时间间隔（默认{0}s）'.format(cpu_interval.get())).grid(row=rowIndex, column=0, sticky='W',
+                                                                                   columnspan=4)
+        Entry(self.root,
+              width=30,
+              textvariable=cpu_interval
+              ).grid(row=rowIndex, column=3, columnspan=4, sticky='W')
+        rowIndex += 1
+        global mem_interval
+        mem_interval = IntVar(value=DEFAULT_INTERVAL_MEM)
+        Label(self.root, text='拉取内存时间间隔（默认{0}s）'.format(mem_interval.get())).grid(row=rowIndex, column=0, sticky='W',
+                                                                                  columnspan=4)
+        Entry(self.root,
+              width=30,
+              textvariable=mem_interval
+              ).grid(row=rowIndex, column=3, columnspan=4, sticky='W')
+        rowIndex += 1
+        global pid_interval
+        pid_interval = IntVar(value=DEFAULT_INTERVAL_PID)
+        Label(self.root, text='拉取pid fd  task  时间间隔（默认{0}s）'.format(pid_interval.get())).grid(row=rowIndex,
+                                                                                                   column=0, sticky='W',
+                                                                                                   columnspan=4)
+        Entry(self.root,
+              width=30,
+              textvariable=pid_interval
+              ).grid(row=rowIndex, column=3, columnspan=4, sticky='W')
+        rowIndex += 1
+        global pull_log_interval
+        pull_log_interval = IntVar(value=DEFAULT_INTERVAL_PULL_LOG)
+        Label(self.root, text='拉取日志时间间隔（默认{0}s）'.format(pull_log_interval.get())).grid(row=rowIndex, column=0,
+                                                                                        sticky='W', columnspan=4)
+        Entry(self.root,
+              width=30,
+              textvariable=pull_log_interval
               ).grid(row=rowIndex, column=3, columnspan=4, sticky='W')
 
         # global waitVar
@@ -163,25 +204,53 @@ def preburning_stop(mQueue):
     my_stop.value = True
 
 
-def mainProc(_StopMark):
-    _StopMark.value = False
-    testModel = testModelVar.get()
-    _TimeValue = timeValue.get().strip()
-    _processNames = processNames.get().strip()
+write_pipe = []
+from Info import Info
 
-    _switchMode = switchModeVar.get()
-    _intervalVar = intervalVar.get()
-    backupIPadress()
-    time.sleep(3)
+info = Info()
+
+
+def mainProc(_StopMark):
+    # _TimeValue = timeValue.get().strip()
+    _StopMark.value = False
+    # testModel = testModelVar.get()
+    # _processNames = processNames.get().strip()
+    # _switchMode = switchModeVar.get()
+    # _intervalVar = intervalVar.get()
+    info.wifi_change_interval = timeValue.get().strip()
+    info.mode = testModelVar.get()
+    info.process_names = processNames.get().strip()
+
+    if not switchModeVar.get():
+        info.change_pcm_list_interval = 0
+    if not intervalVar.get():
+        info.change_pcm_interval = 0
+    try:
+        info.interval_pull_log = int(pull_log_interval.get())
+        info.interval_mem = int(mem_interval.get())
+        info.interval_cpu = int(cpu_interval.get())
+        info.interval_pid_fd_task = int(pid_interval.get())
+    except ValueError:
+        pass
+
+    # 完全没有必要，自己搞定 adb device
+    # backupIPadress()
+    # time.sleep(3)
+
     deviceList = readDeviceList()
     if deviceList:
         for dev in deviceList:
+            info.dev = dev
             print '============begin test: ' + dev
-            p = multiprocessing.Process(target=beginTest,
-                                        args=(
-                                            _StopMark, _processNames, _TimeValue, _switchMode, _intervalVar, testModel,
-                                            dev))
+            # 使用管道进行进程间通讯
+            # 创建管道
+            recv_conn, write_conn = multiprocessing.Pipe()
+            write_pipe.append(write_conn)
+
+            p = multiprocessing.Process(target=child_process,
+                                        args=(_StopMark, recv_conn))
             p.start()
+            write_conn.send(info)
         print 'mainProc End'
     else:
         closeProc(successMark)

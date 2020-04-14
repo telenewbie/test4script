@@ -35,8 +35,10 @@ def excute(env, _StopMark, testModel):
     from Proc4CPU import start_monitor_pid_cpu_usage, start_monitor_thread_cpu_usage
     from ObservedProcess import getObservedLists
     from AnalysisPid import getPidFromPackage
+    from Process_Constant import get_info
     global errorstauts
     global sceneTimer
+    info = get_info()
     writeLog(env, '>>>开始抓取TOP数据')
     # 定时启动项
     mytimer(env, _StopMark)  # FIXMe 暂时注释
@@ -105,6 +107,8 @@ def excute(env, _StopMark, testModel):
                 top_thread_file.write("\n")
                 if errorstauts:
                     _StopMark.value = True
+
+            time.sleep(info.interval_cpu)
             if _StopMark.value:
                 try:
                     sceneTimer.cancel()
@@ -170,6 +174,7 @@ def obtianProcPidStatinfo(env, file):
 
             #  时间 进程名称 父进程pid,进程号 cpu使用率
             data = data.split(",")
+            # print data
             addProcessInfo(data[1], key_process_cpu, float(data[-1]))
             # 通过比较次数
 

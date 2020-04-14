@@ -12,11 +12,14 @@ from logFile import *
 from hprofUtils import *
 from PreBurningUtils import *
 from burnningUtils import stopPreburn
+from Process_Constant import get_info
 
 
 def changeSceneTimer(env, filelist, scenelist, testModel, _TimeValue, index, intervalVar):
     global sceneTimer
-    sceneTimer = Timer(7200, scenePro, (env, filelist, scenelist, testModel, _TimeValue, index, intervalVar))
+    info = get_info()
+    sceneTimer = Timer(info.change_pcm_list_interval, scenePro,
+                       (env, filelist, scenelist, testModel, _TimeValue, index, intervalVar))
     sceneTimer.start()
 
 
@@ -27,7 +30,8 @@ def scenePro(env, filelist, scenelist, testModel, _TimeValue, index, intervalVar
     index += 1
     if index == len(filelist):
         index = 0
-    sceneTimer = Timer(7200, scenePro, (env, filelist, scenelist, testModel, _TimeValue, index, intervalVar))
+    info = get_info()
+    sceneTimer = Timer(info.change_pcm_list_interval, scenePro, (env, filelist, scenelist, testModel, _TimeValue, index, intervalVar))
     sceneTimer.start()
 
 
@@ -39,6 +43,7 @@ def changeScene(env, filelist, scenelist, testModel, _TimeValue, index, interval
     pushfiletoandroid(env, orgPath, _ENV_PCM + 'pcm/')
     writeLog(env, 'Current Scene:{0}'.format(orgPath))
     if intervalVar:
-        time.sleep(60 * 5)
+        info = get_info()
+        time.sleep(info.change_pcm_interval)
     obtainHprof(env, filelist[index - 1])
     startPreburn(env, testModel, _TimeValue)

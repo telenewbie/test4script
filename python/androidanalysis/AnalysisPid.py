@@ -51,15 +51,20 @@ def getPidFromPackage(env, process):
     psinfo = psinfo.split("\n")
     # print psinfo
 
-    for ps in psinfo:
-        # print ps
-        ps = ps.split(" ")
-        ps = [x for x in ps if len(x.strip())]
-        # print ("hello " + ps[-1].strip())
-        print ps[-1].strip()
-        if ps[-1].strip() == process:
-            print("i find it " + ps[0] + ":" + ps[1])
-            return int(ps[1])
+    try:
+        for ps in psinfo:
+            # print ps
+            ps = ps.split(" ")
+            ps = [x for x in ps if len(x.strip())]
+            # print ("hello " + ps[-1].strip())
+            # print ps[-1].strip()
+            if ps[-1].strip() == process:
+                print("i find it " + ps[0] + ":" + ps[1])
+                return int(ps[1])
+    except IndexError:
+        writeLog(env, "ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        writeLog(env, "content:<" + str(psinfo)+">")
+        pass
     # print "sth occur error "
     return -1
 

@@ -1,10 +1,10 @@
 # -*- coding:utf-8 -*-
 
 import pylab as pl
-from DrawUtils import mem_draw_1
-from FileUtils import mkdirs
+from androidanalysis.DrawUtils import mem_draw_1
+from androidanalysis.FileUtils import mkdirs
 import numpy as np
-from mergeData import *
+from androidanalysis.mergeData import *
 
 if __name__ == '__main__':
     # 画图

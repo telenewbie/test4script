@@ -39,7 +39,7 @@ def obtainindex(file):
     # print nameinfo
 
 
-# 获取df
+# 获取fd
 def obtainfd(env, t, pid, item):
     datas = subprocess.Popen(['adb', '-s', env['dev'], 'shell', 'ls', '-al', '/proc/{0}/fd'.format(pid)],
                              stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True,

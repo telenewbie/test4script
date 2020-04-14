@@ -8,7 +8,6 @@ from ProcessUtils import initProcess
 from FileUtils import mkdirs
 
 
-
 # 使用设备准备环境变量
 # 根据 设备 名称  创建 各种文件夹
 def genEnv(dev=None, test=False, myenv={}):
@@ -26,7 +25,7 @@ def genEnv(dev=None, test=False, myenv={}):
 
         print env['tag']
         env['dir'] = env['tag']
-    print env['dir']
+    env['dir'] = os.path.join("build", env['dir'])
 
     mkdirs(env['dir'])  # 只有一台设备就创建时间名的目录，多台设备就创建含设备编码的目录
 
