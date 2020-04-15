@@ -1,20 +1,22 @@
 # -*- coding:utf-8 -*-
 
-from androidanalysis.utils.DrawUtils import *
-from androidanalysis.utils.TimeUtils import *
-from androidanalysis.utils.adbUtils import *
+import threading
+
+from androidanalysis.constant.ObservedProcess import addProcessInfo
 from androidanalysis.constant.ObservedProcess import getObservedLists
 from androidanalysis.constant.ObservedProcess import getProcess
 from androidanalysis.constant.ObservedProcess import getProcessInfo
-from androidanalysis.constant.ObservedProcess import addProcessInfo
-from androidanalysis.constant.ObservedProcess import key_process_stopTime
-from androidanalysis.constant.ObservedProcess import key_process_mem
-from androidanalysis.constant.ObservedProcess import key_process_x_coordinate
-from androidanalysis.constant.ObservedProcess import key_process_x_coordinate_base
 from androidanalysis.constant.ObservedProcess import key_process_begin_mem
 from androidanalysis.constant.ObservedProcess import key_process_end_mem
-from androidanalysis.utils.ProcessUtils import get_process
+from androidanalysis.constant.ObservedProcess import key_process_mem
+from androidanalysis.constant.ObservedProcess import key_process_stopTime
+from androidanalysis.constant.ObservedProcess import key_process_x_coordinate
+from androidanalysis.constant.ObservedProcess import key_process_x_coordinate_base
+from androidanalysis.utils.DrawUtils import *
 from androidanalysis.utils.FileUtils import mkdirs
+from androidanalysis.utils.ProcessUtils import get_process
+from androidanalysis.utils.TimeUtils import *
+from androidanalysis.utils.adbUtils import *
 
 
 def memPro(env, _StopMark, interval=60):

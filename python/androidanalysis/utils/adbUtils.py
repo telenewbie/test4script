@@ -547,6 +547,7 @@ def pulltxzlog(env, tarpath):
 
 # 获取上报信息
 def getReport(env, action='', Timeing=True):
+    import threading
     global txzlogtimer
     root = env.get('dir', None)
     log_path = os.path.join(root, action + time.strftime('%Y%m%d_%H%M%S'))

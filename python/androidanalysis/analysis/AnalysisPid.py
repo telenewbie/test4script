@@ -10,6 +10,7 @@ from androidanalysis.constant.ObservedProcess import haveProcessInfo
 from androidanalysis.constant.ObservedProcess import getProcessInfo
 from androidanalysis.constant.ObservedProcess import key_process_pid
 from androidanalysis.constant.ObservedProcess import key_process_stopTime
+import threading
 
 
 def pidPro(env, _StopMark, interval=5):
