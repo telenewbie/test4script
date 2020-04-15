@@ -34,13 +34,13 @@ def checkContainSpecialValue(content, special):
 
 
 def getPidFromPackage(env, process):
-    psinfo = runAdbCommand(env, ['-s', env['dev'], 'shell', 'ps -ef |grep ', process, "|grep -v grep"],
-                           check=obtain_psinfo)
+    command = "ps -ef | grep {0} |grep -v grep".format(process)
+    psinfo = runAdbCommand(env, ["shell", command], check=obtain_psinfo)
     # print "ps -ef|grep ", process, ",result=", tuple(psinfo), psinfo == ""
     # 有些情况下： ps -ef |grep xxx |grep -v grep 返回本身，诺威达小系统
-    if checkEmpty(psinfo) or checkContainSpecialValue(psinfo, "ps -ef"):
-        psinfo = runAdbCommand(env, ['-s', env['dev'], 'shell', 'ps |grep ', process, "|grep -v grep"],
-                               check=obtain_psinfo)
+    if checkEmpty(psinfo):
+        command = "ps |grep {0} |grep -v grep".format(process)
+        psinfo = runAdbCommand(env, ["shell", command], check=obtain_psinfo)
         # print "ps |grep ", process, ",result=", psinfo
         if checkEmpty(psinfo):
             return -1

@@ -2,6 +2,7 @@
 
 from androidanalysis.constant.Constant import *
 
+
 class Info:
     """
     携带的数据，给到另外一个进程
@@ -22,6 +23,8 @@ class Info:
     interval_pull_log = DEFAULT_INTERVAL_PULL_LOG  # 采集 log的间隔
     keep_save_data_timeout = DEFAULT_INTERVAL_SAVE_DATA  # 是否指定 静态数据的抓取 的耗时时间
     dev = ""  # 设备名称
+    need_pull_core_apk = True  # 取出当前设备的Core的 apk
+    need_replace_burning_apk = True  # 替换老化工具 APK
 
     def is_open_change_pcm_list(self):
         """

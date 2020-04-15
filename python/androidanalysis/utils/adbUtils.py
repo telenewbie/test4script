@@ -230,6 +230,7 @@ def deleteOldCrashfile(env):
     runAdbCommand(env, ['shell', 'rm', '/sdcard/txz/report/*'])
     runAdbCommand(env, ['shell', 'rm', '/sdcard/preburning/asr/*'])
     runAdbCommand(env, ['shell', 'rm', '/sdcard/preburning/pcm/*'])
+    runAdbCommand(env, ['shell', 'rm', '/sdcard/hprof/*'])
 
 
 # 取出 现有的 core的apk
@@ -246,8 +247,11 @@ def pullInitialAPK(env):
 def prepareDevice(env, _StopMark, curpath):
     writeLog(env, '>>>准备环境')
     obtainRoot(env)
-    if not checkenv(env, Preburning, 'preburning.apk', _StopMark):
-        return -1
+    from androidanalysis.constant.Process_Constant import get_info
+    info = get_info()
+    if info.need_replace_burning_apk:
+        if not checkenv(env, Preburning, 'preburning.apk', _StopMark):
+            return -1
     if _StopMark.value:
         return -2
     launch_apk(env, 'com.txznet.txz')

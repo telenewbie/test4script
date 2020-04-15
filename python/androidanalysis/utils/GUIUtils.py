@@ -128,6 +128,28 @@ class GuiPart(Frame):
                                     offvalue=False,
                                     )
         self.interval.grid(row=rowIndex, column=0, columnspan=4, sticky='W')
+        rowIndex += 1  # 7
+        global need_pull_core
+        need_pull_core = BooleanVar()
+        need_pull_core.set(True)
+        self.check_pull_core = Checkbutton(self.root,
+                                    variable=need_pull_core,
+                                    text='取出当前设备core 的apk',
+                                    onvalue=True,
+                                    offvalue=False,
+                                    )
+        self.check_pull_core.grid(row=rowIndex, column=0, columnspan=4, sticky='W')
+        rowIndex += 1  # 7
+        global need_replace_burning_apk
+        need_replace_burning_apk = BooleanVar()
+        need_replace_burning_apk.set(True)
+        self.check_replace_burning = Checkbutton(self.root,
+                                    variable=need_replace_burning_apk,
+                                    text='替换设备原有的老化工具',
+                                    onvalue=True,
+                                    offvalue=False,
+                                    )
+        self.check_replace_burning.grid(row=rowIndex, column=0, columnspan=4, sticky='W')
 
         rowIndex += 2  # 9
         self._StopMark = multiprocessing.Value('b', False)
@@ -166,6 +188,8 @@ class GuiPart(Frame):
                     self.keep['state'] = DISABLED
                     self.switchMode['state'] = DISABLED
                     self.interval['state'] = DISABLED
+                    self.check_pull_core['state'] = DISABLED
+                    self.check_replace_burning['state'] = DISABLED
                 if msg == 'stop_transfer':
                     if self.waitVar.get():
                         closeProc(stopApkMark)
@@ -178,7 +202,10 @@ class GuiPart(Frame):
                     self.keep['state'] = NORMAL
                     self.switchMode['state'] = NORMAL
                     self.interval['state'] = NORMAL
+                    self.check_pull_core['state'] = NORMAL
+                    self.check_replace_burning['state'] = NORMAL
                     self.stop_button['state'] = DISABLED
+
             except Queue.Empty:
                 traceback.print_exc()
                 pass
@@ -215,6 +242,8 @@ def mainProc(_StopMark):
     info.wifi_change_interval = timeValue.get().strip()
     info.mode = testModelVar.get()
     info.process_names = processNames.get().strip()
+    info.need_replace_burning_apk = need_replace_burning_apk.get()
+    info.need_pull_core_apk = need_pull_core.get()
 
     if not switchModeVar.get():
         info.change_pcm_list_interval = 0

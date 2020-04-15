@@ -35,10 +35,11 @@ def init_env(_StopMark):
     openlog(env)  # 开启所有的日志
     writeLog(env, "强杀 Core 的进程：com.txznet.txz")
     killApkPid(env, 'com.txznet.txz')
-    writeLog(env, "删除设备原有的 crash pcm asr 的数据")
+    writeLog(env, "删除设备原有的 crash pcm asr hprof 的数据")
     deleteOldCrashfile(env)
-    writeLog(env, "取出当前设备的Core 的apk")
-    pullInitialAPK(env)  # 取出 core 的apk  #FIXME: 耗时太久
+    if info.need_pull_core_apk:
+        writeLog(env, "取出当前设备的Core 的apk")
+        pullInitialAPK(env)  # 取出 core 的apk  #FIXME: 耗时太久
     if info.mode != 3:
         writeLog(env, "您选择了 模式" + str(info.mode))
         writeLog(env, "开始为您取出本目录所有的pcm文件夹")
@@ -47,7 +48,7 @@ def init_env(_StopMark):
             writeLog(env, "请更改当前的模式 或者 导入您需要 老化的音频数据到 pcm文件夹")
             return None
         print ("size : " + str(fileList[0]))
-        # writeLog(env, "正在为您将 " + str(fileList[0]) + " 中的数据 导入到设备")
+        ret = 0
         ret = prepareDevice(env, _StopMark, fileList[0])
         if ret == -1:
             writeLog(env, "请确定 老化工具的apk 在当前目录上面")
