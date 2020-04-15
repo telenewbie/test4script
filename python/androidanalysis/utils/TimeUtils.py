@@ -1,9 +1,8 @@
 # -*- coding:utf-8 -*-
 
-import os
-import time
 import datetime
 import re
+import time
 
 time_pattern = re.compile('\d+-\d+-\d+_\d+')
 

@@ -1,10 +1,10 @@
 # -*- coding:utf-8 -*-
 
-from androidanalysis.utils.adbUtils import *
-from ProcessUtils import get_process_task
 from ProcessUtils import get_process_fd
 from ProcessUtils import get_process_fd_path
+from ProcessUtils import get_process_task
 from ProcessUtils import get_process_task_path
+from androidanalysis.utils.adbUtils import *
 
 
 # 获取索引

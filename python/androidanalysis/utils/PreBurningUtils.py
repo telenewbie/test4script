@@ -85,10 +85,6 @@ def beginTest(info, _StopMark):
         writeLog({}, "env error")
         return
     startTime = obtainTime()
-    writeLog(env, "hello world")
-    writeLog(env, "你好世界")
-    writeLog(env, "hello world")
-    writeLog(env, "hello world")
     writeLog(env, "开始抓取数据 cpu mem pid 的数据")
     while True:
         excute(env, _StopMark, info.mode)

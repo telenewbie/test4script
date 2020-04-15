@@ -6,11 +6,9 @@
 # 通过 del_process_cpu/del_cpu_total *100 就可以算出单核下的 cpu使用率
 
 import os
-import sys
 import re
-import time
 import threading
-import threadpool
+import time
 
 ADB = "adb shell"
 RE_PKG = re.compile(r'^\w+(\.\w+)+(?::\w+)?$')
@@ -193,8 +191,6 @@ u0_a106      28059   236 0 20:38:31 ?     00:00:04 com.txznet.txz:svr0
     getPidInfoThreads(1, pids)
     pass
 
-
-import subprocess
 
 if __name__ == '__main__':
     # _top_process_p = subprocess.Popen(['adb', 'shell'], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)

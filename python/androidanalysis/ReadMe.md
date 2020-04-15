@@ -35,3 +35,7 @@
 # egg 表明项目名称 subdirectory 表明 setup.py 文件所在的位置，如果不在根目录则需要指定
 #-e git+https://github.com/cocodataset/cocoapi#egg=pycocotools&subdirectory=PythonAPI
 ```
+# 例外
+1. 执行 `ps -ef` 与 执行 `ps` 在不同的android设备上面表现不一样，
+    1. 诺威达小系统  `ps` 才会输出
+    2. android 8.0 设备 部分方案商 `ps ef` 才有输出【留空，后期补上，具体的方案商】

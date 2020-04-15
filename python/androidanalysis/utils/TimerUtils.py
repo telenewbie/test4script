@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 
-from androidanalysis.analysis.AnalysisPid import *
 from androidanalysis.analysis.AnalysisMem import *
+from androidanalysis.analysis.AnalysisPid import *
 
 
 # 定时拉取日志 crash anr tombstones 等 到指定的文件夹

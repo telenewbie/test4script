@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 import os
-import subprocess
+
 from osUtils import listdir
 
 
