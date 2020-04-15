@@ -28,11 +28,16 @@ def checkEmpty(value):
     return value == "" or value is None
 
 
+def checkContainSpecialValue(content, special):
+    return special in str(content)
+
+
 def getPidFromPackage(env, process):
     psinfo = runAdbCommand(env, ['-s', env['dev'], 'shell', 'ps -ef |grep ', process, "|grep -v grep"],
                            check=obtain_psinfo)
     # print "ps -ef|grep ", process, ",result=", tuple(psinfo), psinfo == ""
-    if checkEmpty(psinfo):
+    # 有些情况下： ps -ef |grep xxx |grep -v grep 返回本身，诺威达小系统
+    if checkEmpty(psinfo) or checkContainSpecialValue(psinfo, "ps -ef"):
         psinfo = runAdbCommand(env, ['-s', env['dev'], 'shell', 'ps |grep ', process, "|grep -v grep"],
                                check=obtain_psinfo)
         # print "ps |grep ", process, ",result=", psinfo
@@ -57,7 +62,7 @@ def getPidFromPackage(env, process):
                 return int(ps[1])
     except IndexError:
         writeLog(env, "ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        writeLog(env, "content:<" + str(psinfo)+">")
+        writeLog(env, "content:<" + str(psinfo) + ">")
         pass
     # print "sth occur error "
     return -1
