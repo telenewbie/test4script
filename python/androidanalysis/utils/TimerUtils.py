@@ -16,7 +16,7 @@ def getReport(env, action='', interval=3600, Timeing=True):
         txzlogtimer = Timer(interval, getReport, (env, 'txzlog_'))
         # txzlogtimer = Timer(1320,getReport,(env,))
         txzlogtimer.start()
-    print 'obtain log compeled'
+    writeLog(env, 'obtain log compeled')
 
 
 # 内存PID定时器集合

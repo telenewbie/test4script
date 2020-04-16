@@ -40,7 +40,7 @@ def runCommand(env, cmds, inputs=None, check=None, timeout=None, count=5):
     p = subprocess.Popen(cmds, stdin=infd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True,
                          creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
     if inputs is not None:
-        print inputs
+        writeLog(env, inputs)
 
     def kp(_env, _p, _timeout):
         writeLog(_env, '执行过程出现超时: %s' % _timeout)
@@ -188,9 +188,7 @@ def backupIPadress():
         dev = __RE_IP_ADRESS.search(dev)
         if dev:
             ret.append(dev.group())
-    print ret
     if len(ret) > 0:
-        print("i coming")
         os.system('adb kill-server')
         for ip in ret:
             os.system('adb connect %s' % ip)
@@ -227,10 +225,15 @@ def obtianCrashCount(env):
 
 # 删除crash文件
 def deleteOldCrashfile(env):
-    runAdbCommand(env, ['shell', 'rm', '/sdcard/txz/report/*'])
-    runAdbCommand(env, ['shell', 'rm', '/sdcard/preburning/asr/*'])
-    runAdbCommand(env, ['shell', 'rm', '/sdcard/preburning/pcm/*'])
-    runAdbCommand(env, ['shell', 'rm', '/sdcard/hprof/*'])
+    from androidanalysis.constant.Process_Constant import get_info
+    info = get_info()
+    if info.need_delete_old_file:
+        runAdbCommand(env, ['shell', 'rm', '/sdcard/txz/report/*'])
+        runAdbCommand(env, ['shell', 'rm', '/sdcard/preburning/asr/*'])
+        runAdbCommand(env, ['shell', 'rm', '/sdcard/preburning/pcm/*'])
+        runAdbCommand(env, ['shell', 'rm', '/sdcard/hprof/*'])
+        runAdbCommand(env, ['shell', 'rm', '/data/anr'])
+        runAdbCommand(env, ['shell', 'rm', '/data/tombstones/'])
 
 
 # 取出 现有的 core的apk
@@ -546,21 +549,21 @@ def pulltxzlog(env, tarpath):
             if mfile.find('text_all') >= 0:
                 runAdbCommand(env, ['pull', '/sdcard/txz/log/{0}'.format(mfile), tarpath])
     else:
-        print '{0}'.format(filelist)
+        writeLog(env, 'pull txz log {0}'.format(filelist))
 
 
-# 获取上报信息
-def getReport(env, action='', Timeing=True):
-    import threading
-    global txzlogtimer
-    root = env.get('dir', None)
-    log_path = os.path.join(root, action + time.strftime('%Y%m%d_%H%M%S'))
-    os.makedirs(log_path)
-    threading.Thread(target=pullLog, args=(env, log_path)).start()
-    if Timeing:
-        from androidanalysis.constant.Process_Constant import get_info
-        info = get_info()
-        txzlogtimer = Timer(info.interval_pull_log, getReport, (env, 'txzlog_'))
-        # txzlogtimer = Timer(1320,getReport,(env,))
-        txzlogtimer.start()
-    print 'obtain log compeled'
+# # 获取上报信息
+# def getReport(env, action='', Timeing=True):
+#     import threading
+#     global txzlogtimer
+#     root = env.get('dir', None)
+#     log_path = os.path.join(root, action + time.strftime('%Y%m%d_%H%M%S'))
+#     os.makedirs(log_path)
+#     threading.Thread(target=pullLog, args=(env, log_path)).start()
+#     if Timeing:
+#         from androidanalysis.constant.Process_Constant import get_info
+#         info = get_info()
+#         txzlogtimer = Timer(info.interval_pull_log, getReport, (env, 'txzlog_'))
+#         # txzlogtimer = Timer(1320,getReport,(env,))
+#         txzlogtimer.start()
+#     print 'obtain log compeled'

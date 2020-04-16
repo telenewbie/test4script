@@ -150,6 +150,17 @@ class GuiPart(Frame):
                                     offvalue=False,
                                     )
         self.check_replace_burning.grid(row=rowIndex, column=0, columnspan=4, sticky='W')
+        rowIndex += 1  # 7
+        global need_delete_old_file
+        need_delete_old_file = BooleanVar()
+        need_delete_old_file.set(True)
+        self.check_delete_old_file = Checkbutton(self.root,
+                                    variable=need_delete_old_file,
+                                    text='每次运行 是否 删除设备原有的crash anr pcm hprof 数据',
+                                    onvalue=True,
+                                    offvalue=False,
+                                    )
+        self.check_delete_old_file.grid(row=rowIndex, column=0, columnspan=4, sticky='W')
 
         rowIndex += 2  # 9
         self._StopMark = multiprocessing.Value('b', False)
@@ -190,6 +201,7 @@ class GuiPart(Frame):
                     self.interval['state'] = DISABLED
                     self.check_pull_core['state'] = DISABLED
                     self.check_replace_burning['state'] = DISABLED
+                    self.check_delete_old_file['state'] = DISABLED
                 if msg == 'stop_transfer':
                     if self.waitVar.get():
                         closeProc(stopApkMark)
@@ -204,6 +216,7 @@ class GuiPart(Frame):
                     self.interval['state'] = NORMAL
                     self.check_pull_core['state'] = NORMAL
                     self.check_replace_burning['state'] = NORMAL
+                    self.check_delete_old_file['state'] = NORMAL
                     self.stop_button['state'] = DISABLED
 
             except Queue.Empty:
@@ -244,6 +257,7 @@ def mainProc(_StopMark):
     info.process_names = processNames.get().strip()
     info.need_replace_burning_apk = need_replace_burning_apk.get()
     info.need_pull_core_apk = need_pull_core.get()
+    info.need_delete_old_file = need_delete_old_file.get()
 
     if not switchModeVar.get():
         info.change_pcm_list_interval = 0

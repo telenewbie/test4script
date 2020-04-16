@@ -23,6 +23,7 @@ def excute(env, _StopMark, testModel):
     from androidanalysis.constant.ObservedProcess import getObservedLists
     from AnalysisPid import getPidFromPackage
     from androidanalysis.constant.Process_Constant import get_info
+
     global errorstauts
     global sceneTimer
     info = get_info()
@@ -32,10 +33,14 @@ def excute(env, _StopMark, testModel):
     timerMark = True
     # _top_thread_cmd = ['adb', '-s', env['dev'], 'shell', 'top', '-t', '-d', '1', '-n', '1']
     # _top_thread_p = subprocess.Popen(_top_thread_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    _syslog_cmd = ['adb', '-s', env['dev'], 'logcat', '-v', 'time']
-    _syslog_p = subprocess.Popen(_syslog_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # _syslog_cmd = ['adb', '-s', env['dev'], 'logcat', '-v', 'time']
+    # _syslog_p = subprocess.Popen(_syslog_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     # _top_process_cmd = ['adb', '-s', env['dev'], 'shell', 'top', '-d', '1', '-n', '1']
     # _top_process_p = subprocess.Popen(_top_process_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    from androidanalysis.utils.DeviceInfo import start_get_sys_log
+    start_get_sys_log(env, _StopMark)
+
     count = 51200
     while not _StopMark.value:
         if os.path.exists(stopApkMark):
@@ -47,11 +52,9 @@ def excute(env, _StopMark, testModel):
             os.remove(stopApkMark)
             obtainHprof(env)
         easytime = time.strftime('%Y%m%d_%H%M%S', time.localtime())
-        syslog_file_name = 'SYS_%s.log' % (easytime)
         Top_thread_file_name = 'Top_thread_data_%s.log' % (easytime)
         Top_process_file_name = 'Top_process_data_%s.log' % (easytime)
-        with open(os.path.join(env['syslogpath'], syslog_file_name), 'wb') as syslog_file, \
-                open(os.path.join(env['top_thread_logpath'], Top_thread_file_name), 'wb') as top_thread_file, \
+        with open(os.path.join(env['top_thread_logpath'], Top_thread_file_name), 'wb') as top_thread_file, \
                 open(os.path.join(env['top_process_logpath'], Top_process_file_name), 'wb') as top_process_file:
             while count:
                 writeLog(env, ">>>------------抓取cpu数据------------")
@@ -88,9 +91,7 @@ def excute(env, _StopMark, testModel):
                             continue
                         start_monitor_pid_cpu_usage("", 0.1, pid, writeCpuPidCallback)
                         start_monitor_thread_cpu_usage("", 0.1, pid, writeCpuThreadCallback)
-                    _syslog_p, syslog_file = writeWithPOpen(env, _syslog_p, syslog_file, env['syslogpath'],
-                                                            syslog_file_name, _syslog_cmd)
-                syslog_file.write(_syslog_p.stdout.readline().strip() + '\n')
+
                 top_process_file.write("\n")
                 top_thread_file.write("\n")
                 if errorstauts:
@@ -102,38 +103,15 @@ def excute(env, _StopMark, testModel):
                     sceneTimer.cancel()
                 except:
                     pass
-                writeWithPOpen(env, _syslog_p, syslog_file, env['syslogpath'], syslog_file_name, _syslog_cmd, True)
                 from androidanalysis.utils.TimerUtils import mytimercancel
                 mytimercancel(env, timerMark)
                 break
-            syslog_file.close()
             top_thread_file.close()
             top_process_file.close()
             count = 51200
             if errorstauts:
                 _StopMark.value = True
         writeLog(env, ">>>------------抓取cpu数据------------ 完成")
-
-
-# 清理出现异常的进程
-# closeObtain 更名为 writeWithPOpen
-def writeWithPOpen(env, p, log_file, logpath, logfilename, cmd, killmark=False):
-    import traceback
-    if p.poll() != None or killmark:
-        a = p.stdout.flush()
-        if a != None:
-            try:
-                log_file.write(a)
-            except:
-                writeLog(env, traceback.print_exc())
-                log_file.close()
-                log_file = open(os.path.join(logpath, logfilename), 'wb')
-                log_file.write(a)
-        if not killmark:
-            return subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE), log_file
-        else:
-            return None, log_file
-    return p, log_file
 
 
 # 查找CPU/MEM
@@ -246,7 +224,7 @@ def statistics_top5(data, top5_list, startremind, top5_count):
             try:
                 top5_list.append(data.split()[index])
             except:
-                localprint('当前行数据异常：' + data + ',long:{0}'.format(len(data)))
+                print('当前行数据异常：' + data + ',long:{0}'.format(len(data)))
             break
         if top5_count == 0:
             return (False, 5)

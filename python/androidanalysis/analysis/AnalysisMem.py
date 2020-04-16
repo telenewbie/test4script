@@ -85,6 +85,7 @@ def memTrend(env):
         pass
     # writeLog(env, "killtime:" + str(killtime))
     mlist = []
+    from androidanalysis.constant.Constant import VERIFY_MEM_FILE_SIZE
     if killtime != 0:
         killtime = realKillTime(killtime)
         # writeLog(env, "realtime:" + str(killtime))
@@ -92,14 +93,16 @@ def memTrend(env):
             if root == env['memlogpath']:  # 获取当前目录底下的
                 for file in files:
                     fileTime = time_pattern.search(file).group()
-                    if fileTime < killtime:
+                    if fileTime < killtime and os.path.getsize(os.path.join(root,file)) > VERIFY_MEM_FILE_SIZE:
                         mlist.append(file)
         if mlist:
             excuteTrend(env, env['memlogpath'], mlist[0], mlist[-1])
     else:
-        for root, dirs, filelist in os.walk(env['memlogpath']):
+        for root, dirs, files in os.walk(env['memlogpath']):
             if root == env['memlogpath']:
-                mlist = filelist
+                for file in files:
+                    if os.path.getsize(os.path.join(root,file)) > VERIFY_MEM_FILE_SIZE:
+                        mlist.append(file)
                 break
             pass
 
@@ -244,14 +247,16 @@ def exc_memdata(env):
     startTime = 0
     adress = env['memlogpath']
     from androidanalysis.utils.osUtils import listdir
+    from androidanalysis.constant.Constant import VERIFY_MEM_FILE_SIZE
     if adress:
         success_get_all_mem = True
         for file in listdir(adress):
             myfile = os.path.join(adress, file)
-            if os.path.getsize(myfile) < 4 * 1024:
+            if os.path.getsize(myfile) < VERIFY_MEM_FILE_SIZE:
                 # 表明没有获取到数据，要么能获取到，要么获取不到
                 # 如果 小于 4k 表明获取不到，采用单独进程 adb shell dumpsys meminfo processName的方式进行
                 success_get_all_mem = False
+                writeLog(env, "file {0} 's size less than 1k, something error".format(myfile))
                 break
             excuteMemdata(myfile)
         if not success_get_all_mem:
@@ -267,24 +272,24 @@ def exc_memdata(env):
 def doMemAnalysis(env):
     # 根据 进程名称进入 相应的进程目录下面
     from androidanalysis.utils.osUtils import listdir
+    from androidanalysis.utils.SplitUtils import split
     for process in getObservedLists():
         dir = os.path.join(env['memmoredata_core'], get_process(process))
         for filename in listdir(dir):
             if filename is None or filename == '':
-                print "helloxxxxxxxxxxxxxxx"
                 continue
             with open(os.path.join(dir, filename)) as memData:
                 for line in memData:
-                    # 如果包含  "TOTAL:" 则 提取出后面的关键字
-                    if "TOTAL:" in line:
-                        values = line.split(" ")
+                    # 如果包含  "TOTAL" 则 提取出后面的关键字
+                    # 如果 total 后面的 内容 可以 被 int 来转换 则认为是全部
+                    if "total" in line.lower():
+                        values = split(line, " ", "\t")
                         i = 0
                         for value in values:
-                            if value.strip() == "":
-                                continue
                             i += 1
                             if i == 2:
-                                excuteMemData(process, filename, value)
+                                if value.isdigit():
+                                    excuteMemData(process, filename, value)
                                 # print ",value:" + value
                         pass
                     pass
@@ -337,7 +342,6 @@ def memoryAnalysis(env):
         dir = os.path.join(env['memmoredata_core'], get_process(process))
         for filename in listdir(dir):
             if filename is None or filename == '':
-                print "helloxxxxxxxxxxxxxxx"
                 continue
             with open(os.path.join(dir, filename)) as memData:
                 for line in memData:
@@ -376,6 +380,6 @@ def DalvikHeapX(startmark, filename, starttime, mlist):
         startmark = True
     else:
         if int(filenametime(filename) - starttime) < 0:
-            print line
+            pass
         mlist.append(int(filenametime(filename) - starttime))
     return starttime, startmark

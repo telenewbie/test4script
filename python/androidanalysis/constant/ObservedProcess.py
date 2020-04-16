@@ -141,13 +141,16 @@ def testprint():
                 print value
 
 
-def printInfos():
+def printInfos(env):
+    result = ""
     if process_dict:
         for key in process_dict:
-            print " " + key
+            result += " " + key + "\n"
             if process_dict[key]:
                 for keyvalue in process_dict[key]:
-                    print "     " + keyvalue
+                    result += "     " + keyvalue + "\n"
                     if process_dict[key][keyvalue]:
                         for value in process_dict[key][keyvalue]:
-                            print "         " + str(value)
+                            result += "         " + str(value) + "\n"
+    from androidanalysis.utils.LogFileUtils import writeLog
+    writeLog(env, result)

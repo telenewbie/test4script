@@ -25,6 +25,7 @@ class Info:
     dev = ""  # 设备名称
     need_pull_core_apk = True  # 取出当前设备的Core的 apk
     need_replace_burning_apk = True  # 替换老化工具 APK
+    need_delete_old_file = True  # 替换老化工具 APK
 
     def is_open_change_pcm_list(self):
         """

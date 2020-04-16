@@ -47,7 +47,7 @@ def init_env(_StopMark):
         if len(fileList) == 0:
             writeLog(env, "请更改当前的模式 或者 导入您需要 老化的音频数据到 pcm文件夹")
             return None
-        print ("size : " + str(fileList[0]))
+        writeLog(env, "size : " + str(fileList[0]))
         ret = 0
         ret = prepareDevice(env, _StopMark, fileList[0])
         if ret == -1:
@@ -58,7 +58,6 @@ def init_env(_StopMark):
             return None
         # 如果 打开切换音频集 的开关选项， 则需要每隔一定的时间进行音频集的切换
         if info.is_open_change_pcm_list():
-            print("该功能未实现，被我删掉了。")
             scene_list = [fileList[0]]
             changeSceneTimer(env, fileList, scene_list, info.mode, info.wifi_change_interval, 1,
                              info.is_open_change_pcm_list_interval())
@@ -116,6 +115,8 @@ def beginTest(info, _StopMark):
     runAdbCommand(env, ['pull', '/sdcard/hprof/', env['hprof']])
     writeLog(env,
              '-------------------------------------------开始数据统计-------------------------------------------------------------')
+    from androidanalysis.constant.ObservedProcess import  printInfos
+    printInfos(env)
     mHouer = consumeHour(consumeTime(startTime, endTime))
     writeLog(env, '始于：{0}，终于：{1}，总试耗时：{2:.2f}H'.format(str(startTime), str(endTime), mHouer))
     flowCounter(env, obtainuserid(env), mHouer)

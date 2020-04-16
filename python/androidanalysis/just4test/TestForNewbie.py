@@ -103,6 +103,18 @@ def testGetCpu(env):
     excute(env, _StopMark, testModel)
 
 
+def test_get_sys_log(env):
+    _StopMark = multiprocessing.Value('b', False)
+    from androidanalysis.utils.DeviceInfo import start_get_sys_log
+    start_get_sys_log(env, _StopMark)
+    # while True:
+    time.sleep(5)
+    _StopMark.value = True
+    print("over")
+    time.sleep(5)
+    print("all over")
+
+
 if __name__ == "__main__":
     # obtainindex("Top.log")
     # setObservedLists("com.txznet.music")
@@ -112,11 +124,11 @@ if __name__ == "__main__":
     env = {}
     # 这里的路径需要修改
     # env['dir'] = "MDEyMzQ1Njc4OUFCQ0RFRg==_20200316_185041"
-    env['dir'] = r"..\..\build\result"
+    env['dir'] = r"..\..\build\1"
+    env['dir'] = r"..\build\result"
     # env['dev'] = "R804211907020094"
 
-
-    # env['dev'] = "127.0.0.1:62001"
+    env['dev'] = "0123456789ABCDEF"
     env = genEnv(test=True, myenv=env)
 
     from androidanalysis.constant.ObservedProcess import getObservedTypeDict
@@ -126,6 +138,6 @@ if __name__ == "__main__":
         print _dict[process]
 
     # testCPU()
-    testCPU(env)
-    # testprintmem(env)
-
+    # testCPU(env)
+    testprintmem(env)
+    # test_get_sys_log(env)

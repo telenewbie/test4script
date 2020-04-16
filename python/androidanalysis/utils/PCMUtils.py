@@ -4,10 +4,15 @@ import os
 from osUtils import listdir
 
 
-def obtainPcmList():
+def obtainPcmList(path="."):
     pcmlist = []
-    for mFile in listdir("."):
-        if os.path.isdir(mFile):
+    from androidanalysis.utils.CodeUtils import get_decode_str
+    for mFile in listdir(path):
+        if os.path.isdir(os.path.join(path, mFile)):
             if mFile.lower().find('pcm') >= 0:
-                pcmlist.append(mFile)
+                pcmlist.append(get_decode_str(os.path.join(path, mFile)))
     return pcmlist
+
+
+if __name__ == '__main__':
+    obtainPcmList("..")
